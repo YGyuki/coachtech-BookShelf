@@ -1,0 +1,22 @@
+[90m= [39m[34;4mIlluminate\Database\Eloquent\Collection[39;24m {#7289
+    [34mall[39m: [
+      [34;4mApp\Models\Book[39;24m {#7285
+        [34mid[39m: [35m1[39m,
+        [34muser_id[39m: [35m1[39m,
+        [34mtitle[39m: [32m"[39m[32mLaravel入門[39m[32m"[39m,
+        [34mauthor[39m: [32m"[39m[32mプログラマーA[39m[32m"[39m,
+        [34misbn_13[39m: [32m"[39m[32m9784000000000[39m[32m"[39m,
+        [34mpublication_date[39m: [32m"[39m[32m2026-01-01[39m[32m"[39m,
+        [34mdescription[39m: [36mnull[39m,
+        [34mimage_url[39m: [36mnull[39m,
+        [34mcreated_at[39m: [32m"[39m[32m2026-07-02 04:53:59[39m[32m"[39m,
+        [34mupdated_at[39m: [32m"[39m[32m2026-07-02 04:53:59[39m[32m"[39m,
+        [34mpivot[39m: [34;4mIlluminate\Database\Eloquent\Relations\Pivot[39;24m {#7258
+          [34mgenre_id[39m: [35m1[39m,
+          [34mbook_id[39m: [35m1[39m,
+          [34mcreated_at[39m: [32m"[39m[32m2026-07-02 04:55:08[39m[32m"[39m,
+          [34mupdated_at[39m: [32m"[39m[32m2026-07-02 04:55:08[39m[32m"[39m,
+        },
+      },
+    ],
+  }
