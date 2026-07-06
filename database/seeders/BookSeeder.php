@@ -118,7 +118,6 @@ class BookSeeder extends Seeder
                     'title' => $bookData['title'],
                     'author' => $bookData['author'],
                     'publication_date' => $bookData['publication_date'],
-                    //適当な文字列？
                     'description' => fake()->realText(),
                     'image_url' => "https://placehold.co/200x300/e2e8f0/475569?text={$number}",
                 ]

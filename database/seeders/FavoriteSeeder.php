@@ -17,10 +17,10 @@ class FavoriteSeeder extends Seeder
         $books = Book::all();
 
         foreach ($users as $user) {
-            // 各ユーザーごとに、ランダムで3〜5冊の本をピックアップする
+            // 各ユーザーごとに、ランダムで3〜5冊の本を選出
             $randomBooks = $books->random(fake()->numberBetween(3, 5));
 
-            // 抽出した本のIDだけを集めた配列を作る
+            // 選出した書籍のID配列を取得
             $bookIds = $randomBooks->pluck('id')->toArray();
 
             // 中間テーブル favorites に同期する

@@ -26,7 +26,7 @@ class ReviewLikeSeeder extends Seeder
             $likeCount = fake()->numberBetween(0, 3);
 
             if ($likeCount > 0) {
-                // シャッフルして必要な件数分を take で切り出す
+                // シャッフルして必要な件数分だけ選出
                 $randomUsers = $likedUsers->shuffle()->take($likeCount);
 
                 // いいねするユーザーのID配列を取得
