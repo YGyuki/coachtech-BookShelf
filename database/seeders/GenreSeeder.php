@@ -1,0 +1,35 @@
+<?php
+
+namespace Database\Seeders;
+
+use App\Models\Genre;
+use Illuminate\Database\Seeder;
+
+class GenreSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        $genres = [
+            '小説',
+            'ビジネス',
+            '技術書',
+            '自己啓発',
+            'エッセイ',
+            '歴史',
+            '科学',
+            '芸術',
+            '料理',
+            '旅行',
+        ];
+
+        //name重複をチェックし、存在しなければ作成する
+        foreach ($genres as $genre) {
+            Genre::firstOrCreate(
+                ['name' => $genre]
+            );
+        }
+    }
+}
