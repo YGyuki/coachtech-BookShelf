@@ -110,7 +110,7 @@ class BookSeeder extends Seeder
             // カウンタ番号（1〜11）を生成
             $number = $index + 1;
 
-            // isbn_13の重複をチェックし、存在しなければ作成
+            // isbnの重複をチェックし、存在しなければ作成
             $book = Book::firstOrCreate(
                 ['isbn' => $bookData['isbn']], // 検索条件
                 [
