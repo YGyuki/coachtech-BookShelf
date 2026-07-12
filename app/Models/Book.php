@@ -16,8 +16,8 @@ class Book extends Model
         'user_id',
         'title',
         'author',
-        'isbn_13',
-        'publication_date',
+        'isbn',
+        'published_date',
         'description',
         'image_url',
     ];
