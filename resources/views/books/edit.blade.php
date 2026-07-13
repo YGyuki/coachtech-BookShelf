@@ -17,7 +17,8 @@
                             <a href="{{ route('books.show', $book) }}" class="text-gray-600 hover:text-gray-900 mr-4">
                                 キャンセル
                             </a>
-                            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded">
+                            <button type="submit"
+                                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded">
                                 更新
                             </button>
                         </div>

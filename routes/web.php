@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BookController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,11 +14,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('books.index');
+// 認証必須のルート（登録・編集・更新・削除）
+Route::middleware(['auth'])->group(function () {
+    Route::resource('books', BookController::class)->except(['index', 'show']);
 });
 
-//仮ルート設定
-Route::middleware('auth')->group(function () {
-    Route::get('/books', fn() => '書籍一覧(準備中)')->name('books.index');
-});
+// ゲストもアクセス可能なルート（一覧・詳細のみ）
+Route::resource('books', BookController::class)->only(['index', 'show']);
