@@ -88,6 +88,7 @@ class BookController extends Controller
     {
         // 認可チェック
         $this->authorize('delete', $book);
+
         // 書籍、関連データ(レビュー、お気に入り)の削除
         $book->delete();
 

@@ -19,8 +19,7 @@ class UpdateBookRequest extends FormRequest
         return [
             'title' => 'required|string',
             'author' => 'required|string',
-            'isbn' =>
-                'required',
+            'isbn' => 'required',
             'digits:13',
             Rule::unique('books', 'isbn')->ignore($bookId),
             'published_date' => 'required|date_format:Y-m-d',
