@@ -6,6 +6,7 @@ use App\Http\Requests\StoreBookRequest;
 use App\Http\Requests\UpdateBookRequest;
 use App\Models\Book;
 use App\Models\Genre;
+use App\Models\Review;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
@@ -21,7 +22,10 @@ class BookController extends Controller
 
     public function show(Book $book)
     {
-        $book->load('genres');
+        $book->load(
+            'genres',
+            'reviews.likedByUsers'
+        );
         return view('books.show', compact('book'));
     }
 
