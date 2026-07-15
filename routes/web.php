@@ -1,23 +1,27 @@
 <?php
 
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\ReviewController;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
-
-// 認証必須のルート（登録・編集・更新・削除）
-Route::middleware(['auth'])->group(function () {
-    Route::resource('books', BookController::class)->except(['index', 'show']);
+Route::get('/', function () {
+    return redirect()->route('books.index');
 });
 
-// ゲストもアクセス可能なルート（一覧・詳細のみ）
+Route::middleware(['auth'])->group(function () {
+    // 書籍の認証必須のルート（登録・編集・更新・削除）
+    Route::resource('books', BookController::class)->except(['index', 'show']);
+
+    // レビュー投稿
+    Route::post('/books/{book}/reviews', [ReviewController::class, 'store'])->name('reviews.store');
+
+    // いいねトグル
+    Route::post('/reviews/{review}/like', [ReviewController::class, 'like'])->name('reviews.like');
+
+    // レビューの編集・更新・削除（リソースを部分利用して短く記述）
+    Route::resource('reviews', ReviewController::class)->only(['edit', 'update', 'destroy']);
+});
+
+// ゲストもアクセス可能なルート（書籍一覧・詳細のみ）
 Route::resource('books', BookController::class)->only(['index', 'show']);
+
