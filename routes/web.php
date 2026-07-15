@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\ReviewController;
 use Illuminate\Support\Facades\Route;
 
@@ -15,11 +16,17 @@ Route::middleware(['auth'])->group(function () {
     // レビュー投稿
     Route::post('/books/{book}/reviews', [ReviewController::class, 'store'])->name('reviews.store');
 
-    // いいねトグル
+    // いいね登録・解除トグル処理
     Route::post('/reviews/{review}/like', [ReviewController::class, 'like'])->name('reviews.like');
 
-    // レビューの編集・更新・削除（リソースを部分利用して短く記述）
+    // レビューの編集・更新・削除
     Route::resource('reviews', ReviewController::class)->only(['edit', 'update', 'destroy']);
+
+    // お気に入り一覧画面
+    Route::get('favorites', [FavoriteController::class, 'index'])->name('favorites.index');
+
+    // お気に入り登録・解除トグル処理
+    Route::post('/books/{book}/favorite', [FavoriteController::class, 'toggle'])->name('favorites.toggle');
 });
 
 // ゲストもアクセス可能なルート（書籍一覧・詳細のみ）
