@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\GenreController;
 use App\Http\Controllers\ReviewController;
 use Illuminate\Support\Facades\Route;
 
@@ -12,6 +13,9 @@ Route::get('/', function () {
 Route::middleware(['auth'])->group(function () {
     // 書籍の認証必須のルート（登録・編集・更新・削除）
     Route::resource('books', BookController::class)->except(['index', 'show']);
+
+    // ジャンルの登録・編集・更新・削除
+    Route::resource('genres', GenreController::class);
 
     // レビュー投稿
     Route::post('/books/{book}/reviews', [ReviewController::class, 'store'])->name('reviews.store');
