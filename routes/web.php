@@ -3,6 +3,7 @@
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\GenreController;
+use App\Http\Controllers\RankingController;
 use App\Http\Controllers\ReviewController;
 use Illuminate\Support\Facades\Route;
 
@@ -33,6 +34,13 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/books/{book}/favorite', [FavoriteController::class, 'toggle'])->name('favorites.toggle');
 });
 
-// ゲストもアクセス可能なルート（書籍一覧・詳細のみ）
+// ランキング画面(ゲスト閲覧可)
+Route::get('ranking', [RankingController::class, 'index'])->name('ranking.index');
+
+// 書籍一覧・詳細(ゲスト閲覧可)
 Route::resource('books', BookController::class)->only(['index', 'show']);
+
+
+
+
 
