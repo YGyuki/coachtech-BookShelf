@@ -39,8 +39,3 @@ Route::get('ranking', [RankingController::class, 'index'])->name('ranking.index'
 
 // 書籍一覧・詳細(ゲスト閲覧可)
 Route::resource('books', BookController::class)->only(['index', 'show']);
-
-
-
-
-
