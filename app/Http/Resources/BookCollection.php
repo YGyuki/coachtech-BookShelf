@@ -22,7 +22,9 @@ class BookCollection extends ResourceCollection
                     'title' => $book->title,
                     'author' => $book->author,
                     'isbn' => $book->isbn,
-                    'genres' => $book->genres->pluck('name'),
+                    'published_date' => $book->published_date,
+                    'genres_id' => $book->genres->pluck('id'),
+                    'genres_name' => $book->genres->pluck('name'),
                     'average_rating' => round($book->reviews_avg_rating ?? 0, 1),
                     'reviews_count' => $book->reviews_count ?? 0,
                 ];

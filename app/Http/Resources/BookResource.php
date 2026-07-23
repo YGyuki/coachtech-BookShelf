@@ -22,7 +22,8 @@ class BookResource extends JsonResource
             'published_date' => $this->published_date,
             'description' => $this->description,
             'image_url' => $this->image_url,
-            'genres' => $this->genres->pluck('name'),
+            'genres_id' => $this->genres->pluck('id'),
+            'genres_name' => $this->genres->pluck('name'),
             'reviews' => $this->whenLoaded('reviews', function () {
                 return $this->reviews->map(function ($review) {
                     return [
