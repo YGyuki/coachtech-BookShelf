@@ -34,16 +34,14 @@ class ReviewController extends Controller
         // 1. レビューの投稿者IDと、現在ログインしているユーザーのIDを比較
         if ($review->user_id === Auth::id()) {
             // 自分のレビューだった場合は、処理をせずメッセージ付きで直前の画面に戻す
-            return back()
-                ->with('error', '自分のレビューにはいいねできません。');
+            return back()->with('error', '自分のレビューにはいいねできません。');
         }
 
         $user = Auth::user();
 
         $user->likedReviews()->toggle($review->id);
 
-        return back()
-            ->with('success', 'いいねを更新しました。');
+        return back();
     }
 
     /**
