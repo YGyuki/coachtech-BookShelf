@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\BookCollection;
+use App\Http\Resources\BookResource;
 use App\Http\Requests\StoreBookRequest;
 use App\Http\Requests\UpdateBookRequest;
 use App\Models\Book;
-use App\Http\Resources\BookCollection;
-use App\Http\Resources\BookResource;
 
 class BookController extends Controller
 {

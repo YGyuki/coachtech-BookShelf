@@ -15,7 +15,7 @@ class BookCollection extends ResourceCollection
     public function toArray(Request $request): array
     {
         return [
-            // $this->collection でページネーションされた Book のリストをループ処理します
+            // $this->collection でページネーションされた Book のリストをループ処理
             'data' => $this->collection->map(function ($book) {
                 return [
                     'id' => $book->id,

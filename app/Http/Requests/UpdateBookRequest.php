@@ -19,7 +19,7 @@ class UpdateBookRequest extends FormRequest
         // ルートからIDを取得
         $bookId = $this->route('book');
 
-        // 💡 存在しない場合は404を返して処理を中断
+        // 存在しない場合は404を返して処理を中断
         if (!Book::where('id', $bookId)->exists()) {
             throw new HttpResponseException(
                 response()->json(['error' => '指定された書籍が見つかりません。'], 404)
