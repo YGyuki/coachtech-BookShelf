@@ -19,7 +19,6 @@
                 </div>
             @endif
             {{-- 20260723 ed 自分のレビューにいいねした際のエラーメッセージ用に追加 --}}
-
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     <div class="flex flex-col md:flex-row gap-6">
