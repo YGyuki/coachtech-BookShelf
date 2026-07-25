@@ -21,8 +21,8 @@ class BookFactory extends Factory
             'user_id' => User::factory(),
             'title' => fake()->sentence(),
             'author' => fake()->name(),
-            'isbn_13' => fake()->unique()->isbn13(),
-            'publication_date' => fake()->date(),
+            'isbn' => fake()->unique()->isbn13(),
+            'published_date' => fake()->date(),
             'description' => fake()->realText(),
             'image_url' => fake()->url(),
         ];
