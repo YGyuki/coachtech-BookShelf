@@ -7,9 +7,7 @@ use App\Models\Genre;
 use App\Models\Review;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-// use PHPUnit\Framework\TestCase;
 use Tests\TestCase;
-
 
 class BookTest extends TestCase
 {

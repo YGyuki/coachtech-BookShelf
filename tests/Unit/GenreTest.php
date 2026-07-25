@@ -28,7 +28,7 @@ class GenreTest extends TestCase
         // 紐づけた最初の本が、ジャンルの本一覧に正しく含まれているか
         $this->assertTrue($genre->books->contains($books->first()));
 
-        // 中間テーブルにレコードが正しく書き込まれているか
+        // 中間テーブル（book_genre）にレコードが正しく書き込まれているか
         $this->assertDatabaseHas('book_genre', [
             'genre_id' => $genre->id,
             'book_id' => $books->first()->id,
