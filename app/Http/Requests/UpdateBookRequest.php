@@ -15,11 +15,14 @@ class UpdateBookRequest extends FormRequest
     }
 
     protected function prepareForValidation()
-    {//APIでバリデーションの前に404エラーを確認
-        // ルートからIDを取得
-        $bookId = $this->route('book');
+    {//公開APIで404エラーの前にバリデーションチェックが入ってしまうのを回避
+        // 1. ルートパラメータからbookを取得
+        $bookParam = $this->route('book');
 
-        // 存在しない場合は404を返して処理を中断
+        // 2. オブジェクトならidプロパティ、数値や文字列ならそのままIDとして扱う
+        $bookId = $bookParam instanceof Book ? $bookParam->id : $bookParam;
+
+        // 3. IDが存在しない場合は、バリデーション前に即座に404を返して割り込む
         if (!Book::where('id', $bookId)->exists()) {
             throw new HttpResponseException(
                 response()->json(['error' => '指定された書籍が見つかりません。'], 404)
