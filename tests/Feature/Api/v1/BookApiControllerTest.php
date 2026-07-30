@@ -216,7 +216,7 @@ class BookApiControllerTest extends TestCase
     }
 
     /** @test */
-    public function API経由の登録時に既に登録されているISBNコードは登録できない()
+    public function API経由の登録時に既に登録されているISBNコードは登録できない(): void
     {
         // 1. Arrange
         User::factory()->create(['id' => 1]);
