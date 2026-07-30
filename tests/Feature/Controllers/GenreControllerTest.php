@@ -13,7 +13,7 @@ class GenreControllerTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function 新しくジャンルを登録して一覧画面にリダイレクトする()
+    public function 新しくジャンルを登録して一覧画面にリダイレクトする(): void
     {
         // 1. Arrange
         $user = User::factory()->create();
@@ -34,7 +34,7 @@ class GenreControllerTest extends TestCase
     }
 
     /** @test */
-    public function ジャンル名が空欄の場合は登録できずバリデーションエラーになる()
+    public function ジャンル名が空欄の場合は登録できずバリデーションエラーになる(): void
     {
         // 1. Arrange
         $user = User::factory()->create();
@@ -55,7 +55,7 @@ class GenreControllerTest extends TestCase
     }
 
     /** @test */
-    public function 自分自身のジャンル名であれば重複エラーにならず更新できる()
+    public function 自分自身のジャンル名であれば重複エラーにならず更新できる(): void
     {
         // 1. Arrange
         $user = User::factory()->create();
@@ -78,7 +78,7 @@ class GenreControllerTest extends TestCase
     }
 
     /** @test */
-    public function 他人が既に登録しているジャンル名への変更はバリデーションエラーになる()
+    public function 既に登録されているジャンル名への変更はバリデーションエラーになる(): void
     {
         // 1. Arrange
         $user = User::factory()->create();
@@ -107,7 +107,7 @@ class GenreControllerTest extends TestCase
     }
 
     /** @test */
-    public function ジャンル名を更新して一覧画面にリダイレクトする()
+    public function ジャンル名を更新して一覧画面にリダイレクトする(): void
     {
         // 1. Arrange
         $user = User::factory()->create();
@@ -130,7 +130,7 @@ class GenreControllerTest extends TestCase
     }
 
     /** @test */
-    public function 書籍が1冊も紐づいていないジャンルは削除できる()
+    public function 書籍が1冊も紐づいていないジャンルは削除できる(): void
     {
         // 1. Arrange
         $user = User::factory()->create();
@@ -147,7 +147,7 @@ class GenreControllerTest extends TestCase
     }
 
     /** @test */
-    public function 書籍が1冊でも紐づいているジャンルは削除できずエラーメッセージを返す()
+    public function 書籍が1冊でも紐づいているジャンルは削除できずエラーメッセージを返す(): void
     {
         // 1. Arrange
         $user = User::factory()->create();
