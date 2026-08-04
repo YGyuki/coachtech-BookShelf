@@ -15,9 +15,12 @@ return new class extends Migration {
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('book_id')->constrained()->cascadeOnDelete();
             $table->date('target_date');
-            $table->date('completed_at')->nullable();
-            $table->string('status', 20)->default('pending');
+            $table->timestamp('completed_at')->nullable();
+            $table->string('status', 20)->default('in_progress');
             $table->timestamps();
+
+            //同じユーザーが同じ書籍で複数回読書計画を作成するのを防ぐ
+            $table->unique(['user_id', 'book_id']);
         });
     }
 
