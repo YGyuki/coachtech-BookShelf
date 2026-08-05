@@ -33,7 +33,7 @@ class ReviewLikeSeeder extends Seeder
                 $userIds = $randomUsers->pluck('id')->toArray();
 
                 // 中間テーブル review_likes に追加する
-                $review->likedUsers()->syncWithoutDetaching($userIds);
+                $review->likedByUsers()->syncWithoutDetaching($userIds);
             }
         }
     }
