@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\BookReportController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\GenreController;
 use App\Http\Controllers\RankingController;
@@ -32,6 +33,9 @@ Route::middleware(['auth'])->group(function () {
 
     // お気に入り登録・解除トグル処理
     Route::post('/books/{book}/favorite', [FavoriteController::class, 'toggle'])->name('favorites.toggle');
+
+    // 認証済みユーザー向けの読書レポートルーティング
+    Route::get('/reports', [BookReportController::class, 'index'])->name('reports.index');
 });
 
 // ランキング画面(ゲスト閲覧可)
