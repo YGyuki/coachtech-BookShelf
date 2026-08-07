@@ -59,7 +59,7 @@ class BookReportController extends Controller
         // -------------------------------------------------------------------------
 
         // 3. 高評価書籍TOP5（キー名: top_rated_books）
-        // 4星以上のレビューをフィルタリング・ソートし、Bladeで扱いやすい配列形式に変換
+        // 4星以上のレビューをフィルタリング・ソートし、配列形式に変換
         $stats['top_rated_books'] = $reviews->filter(function ($review) {
             return $review->rating >= 4;
         })
