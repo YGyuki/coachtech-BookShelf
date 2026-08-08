@@ -27,7 +27,8 @@ class StoreReadingPlanRequest extends FormRequest
                 'required',
                 'integer',
                 'exists:books,id',
-                'unique:reading_plans'
+                Rule::unique('reading_plans', 'book_id')
+                    ->where('user_id', auth()->id())
             ],
             'target_date' => [
                 'required',
