@@ -25,8 +25,6 @@ class UpdateReadingPlanRequest extends FormRequest
         $readingPlan = $this->route()->parameter('reading_plan');
         $readingPlanId = is_object($readingPlan) ? $readingPlan->id : $readingPlan;
 
-
-
         return [
             'book_id' => [
                 'sometimes', // 編集時に書籍を修正できないため
