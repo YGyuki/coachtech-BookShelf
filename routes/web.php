@@ -5,6 +5,8 @@ use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\GenreController;
 use App\Http\Controllers\RankingController;
 use App\Http\Controllers\ReviewController;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -14,6 +16,9 @@ Route::get('/', function () {
 Route::middleware(['auth'])->group(function () {
     // 書籍の認証必須のルート（登録・編集・更新・削除）
     Route::resource('books', BookController::class)->except(['index', 'show']);
+
+    // ★ISBN検索API（登録・編集のJavaScriptがここにアクセスする）
+    Route::get('/books/isbn/{isbn}', [BookController::class, 'fetchByIsbn'])->name('books.isbn.fetch');
 
     // ジャンルの登録・編集・更新・削除
     Route::resource('genres', GenreController::class);

@@ -12,6 +12,11 @@ class Book extends Model
 {
     use HasFactory;
 
+    // nullableの変更に伴い文字列となってしまうので日付に変換
+    protected $casts = [
+        'published_date' => 'date',
+    ];
+
     protected $fillable = [
         'user_id',
         'title',
