@@ -23,6 +23,8 @@ class ReadingPlan extends Model
     /** カラムの型キャスト定義 */
     protected $casts = [
         'status' => ReadingPlanStatus::class,
+        'target_date' => 'date',
+        'completed_at' => 'datetime',
     ];
 
     /** モデルのデフォルト値 */

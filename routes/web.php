@@ -5,6 +5,7 @@ use App\Http\Controllers\BookReportController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\GenreController;
 use App\Http\Controllers\RankingController;
+use App\Http\Controllers\ReadingPlanController;
 use App\Http\Controllers\ReviewController;
 use Illuminate\Support\Facades\Route;
 
@@ -36,6 +37,20 @@ Route::middleware(['auth'])->group(function () {
 
     // 認証済みユーザー向けの読書レポートルーティング
     Route::get('/reports', [BookReportController::class, 'index'])->name('reports.index');
+
+    // 読書計画(読了)
+    Route::post('reading-plans/{reading_plan}/complete', [ReadingPlanController::class, 'complete'])
+        ->name('reading-plans.complete');
+
+    // 読書計画(一覧・登録・編集・更新・削除)
+    Route::resource('reading-plans', ReadingPlanController::class)->except(['show'])->names([
+        'index' => 'reading-plans.index',
+        'create' => 'reading-plans.create',
+        'store' => 'reading-plans.store',
+        'edit' => 'reading-plans.edit',
+        'update' => 'reading-plans.update',
+        'destroy' => 'reading-plans.destroy',
+    ]);
 });
 
 // ランキング画面(ゲスト閲覧可)
