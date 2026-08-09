@@ -15,8 +15,8 @@ class StoreBookRequest extends FormRequest
         return [
             'title' => 'required|string',
             'author' => 'required|string',
-            'isbn' => 'required|digits:13|unique:books',
-            'published_date' => 'required|date_format:Y-m-d',
+            'isbn' => 'nullable|digits:13|unique:books',
+            'published_date' => 'nullable|date_format:Y-m-d',
             'description' => 'nullable|string',
             'image_url' => 'nullable|url:https',
             'genres' => 'required|array',

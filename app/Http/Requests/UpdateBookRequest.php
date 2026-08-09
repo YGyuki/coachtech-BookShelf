@@ -38,11 +38,11 @@ class UpdateBookRequest extends FormRequest
             'title' => 'required|string',
             'author' => 'required|string',
             'isbn' => [
-                'required',
+                'nullable',
                 'digits:13',
                 Rule::unique('books', 'isbn')->ignore($bookId)
             ],
-            'published_date' => 'required|date_format:Y-m-d',
+            'published_date' => 'nullable|date_format:Y-m-d',
             'description' => 'nullable|string',
             'image_url' => 'nullable|url:https',
             'genres' => 'required|array',
