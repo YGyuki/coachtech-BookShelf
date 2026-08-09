@@ -43,7 +43,7 @@ class BookController extends Controller
             });
         }
 
-        // 4. ソート機能（登録日新しい順/登録日古い順/平均評価順/タイトル順）
+        // 4. ソート機能（登録日新しい順/登録日古い順/タイトル順/平均評価順）
         $sort = $request->input('sort', 'newest'); // デフォルト:newest
         switch ($sort) {
             case 'oldest':
@@ -163,19 +163,18 @@ class BookController extends Controller
         }
 
         try {
-            // ★URLが完全に正しいか一文字ずつ確認してください（末尾に /volumes が必要です）
             $url = 'https://www.googleapis.com/books/v1/volumes';
 
             $queryParams = [
                 'q' => 'isbn:' . $isbn,
             ];
 
-            // APIキーがあれば含める（原因3でコメントアウトしていた場合は元に戻す）
+            // APIキーを指定
             if (config('services.google_books.key')) {
                 $queryParams['key'] = config('services.google_books.key');
             }
 
-            // HTTPリクエスト送信（原因2でwithoutVerifyingを付けた場合は、一旦通常に戻す。もしまたエラーが出たらwithoutVerifying()を挟む）
+            // HTTPリクエスト送信
             $response = Http::get($url, $queryParams);
 
             if ($response->failed()) {
@@ -190,8 +189,9 @@ class BookController extends Controller
             }
 
             // 最初に見つかった書籍の情報を取得
-            $volumeInfo = $data['items'][0]['volumeInfo']; // ★ここが前回 empty($data['items']) だったため、インデックス [0] を正確に指定します
-// ★【追加】Googleから返ってきた本の「本物のISBN」を取り出す
+            $volumeInfo = $data['items'][0]['volumeInfo'];
+            // Googleから返ってきた書籍の「本物のISBN」を取り出す
+            // ※最後1桁をGoogleが自動で修正してデータ取得する場合があるため
             $industryIdentifiers = $volumeInfo['industryIdentifiers'] ?? [];
             $returnedIsbn = '';
 
@@ -202,12 +202,12 @@ class BookController extends Controller
                 }
             }
 
-            // ★【追加】ユーザーが入力したISBNと、Googleが持っていたISBNが「完全一致」するかチェック
+            // ユーザーが入力したISBNと、Googleが持っていたISBNが完全一致するかチェック
             if ($returnedIsbn !== $isbn) {
                 return response()->json(['error' => '該当する書籍情報が見つかりませんでした。'], 404);
             }
 
-            // フロントエンドのJavaScript（Blade）が期待するキー名に合わせてデータを整形
+            // フロントエンドに合わせてデータを整形
             return response()->json([
                 'title' => $volumeInfo['title'] ?? '',
                 'author' => isset($volumeInfo['authors']) ? implode(', ', $volumeInfo['authors']) : '',
