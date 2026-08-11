@@ -30,10 +30,6 @@ class CheckReadingPlans extends Command
             //期日からみて何日経過したか
             $passedDays = $targetDate->diffInDays($today, false);
 
-            //デバック
-            // $this->info("Plan ID: {$plan->id}, Title: {$plan->book->title}, Status: {$plan->status}, Passed Days: {$passedDays}");
-
-
             // 【通知タイミングの判定】
             if ($passedDays === -3) {
                 // 3日前

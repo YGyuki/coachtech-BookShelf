@@ -44,7 +44,7 @@ class ReadingPlanReminder extends Notification
         $message = match ($this->type) {
             'before_3_days' => "『{$bookTitle}』の読書目標期日（{$targetDate}）が近づいてきました。期日まであと3日です。",
             'today' => "『{$bookTitle}』の読書目標が期日（{$targetDate}）を迎えました。",
-            'after_3_days' => "『{$bookTitle}』の読書目標（{$targetDate}）から3日が過ぎました。",
+            'after_3_days' => "『{$bookTitle}』の読書目標期日（{$targetDate}）から3日が過ぎました。",
             default => "『{$bookTitle}』の読書計画に関するお知らせです。",
         };
 
