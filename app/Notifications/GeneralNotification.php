@@ -38,7 +38,7 @@ class GeneralNotification extends Notification
     {
         return [
             'timing' => $this->data['timing'] ?? null,
-            'message' => $this->data['message'],
+            'title' => $this->data['message'],
         ];
     }
 }

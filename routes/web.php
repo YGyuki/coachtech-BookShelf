@@ -4,11 +4,10 @@ use App\Http\Controllers\BookController;
 use App\Http\Controllers\BookReportController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\GenreController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\RankingController;
 use App\Http\Controllers\ReadingPlanController;
 use App\Http\Controllers\ReviewController;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -19,7 +18,7 @@ Route::middleware(['auth'])->group(function () {
     // 書籍の認証必須のルート（登録・編集・更新・削除）
     Route::resource('books', BookController::class)->except(['index', 'show']);
 
-    // ★ISBN検索API（登録・編集のJavaScriptがここにアクセスする）
+    // ISBN検索API（登録・編集）
     Route::get('/books/isbn/{isbn}', [BookController::class, 'fetchByIsbn'])->name('books.isbn.fetch');
 
     // ジャンルの登録・編集・更新・削除
@@ -56,6 +55,10 @@ Route::middleware(['auth'])->group(function () {
         'update' => 'reading-plans.update',
         'destroy' => 'reading-plans.destroy',
     ]);
+
+    // 通知関連のルート
+    Route::get('notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('notifications/{notification}/read', [NotificationController::class, 'read'])->name('notifications.read');
 });
 
 // ランキング画面(ゲスト閲覧可)
