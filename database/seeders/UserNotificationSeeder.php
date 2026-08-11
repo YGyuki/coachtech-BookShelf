@@ -57,7 +57,7 @@ class UserNotificationSeeder extends Seeder
             ],
             [
                 'timing' => null,
-                'message' => '【デフォルト通知】運営からのお知らせです。',
+                'message' => '読書計画に関するお知らせです。',
                 'read' => false,
             ],
         ];
