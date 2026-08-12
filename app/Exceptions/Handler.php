@@ -3,7 +3,9 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Throwable;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Auth\Access\AuthorizationException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -23,8 +25,32 @@ class Handler extends ExceptionHandler
      */
     public function register(): void
     {
-        $this->reportable(function (Throwable $e) {
-            //
+        // 未認証（401）時のレスポンスをJSONにカスタマイズ
+        $this->renderable(function (AuthenticationException $e, $request) {
+            if ($request->is('api/v1/*')) {
+                return response()->json([
+                    'message' => '認証されていません。有効なトークンを提示してください。'
+                ], 401);
+            }
+        });
+
+        // 認可エラー（403）時のレスポンスをJSONにカスタマイズ
+        $this->renderable(function (AuthorizationException $e, $request) {
+            if ($request->is('api/v1/*')) {
+                return response()->json([
+                    'message' => 'この操作を行う権限がありません（書籍の所有者ではありません）。'
+                ], 403);
+            }
+        });
+
+        // Laravelが認可エラーを自動で AccessDeniedHttpException に変換するため、
+        // ここでキャッチして api/v1 向けにカスタムJSONメッセージを返却する
+        $this->renderable(function (AccessDeniedHttpException $e, $request) {
+            if ($request->is('api/v1/*')) {
+                return response()->json([
+                    'message' => 'この操作を行う権限がありません（書籍の所有者ではありません）。'
+                ], 403);
+            }
         });
     }
 }
