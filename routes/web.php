@@ -15,7 +15,7 @@ Route::get('/', function () {
 });
 
 Route::middleware(['auth'])->group(function () {
-    // 書籍の認証必須のルート（登録・編集・更新・削除）
+    // 書籍登録・編集・更新・削除（認証必須）
     Route::resource('books', BookController::class)->except(['index', 'show']);
 
     // ISBN検索API（登録・編集）
@@ -39,7 +39,7 @@ Route::middleware(['auth'])->group(function () {
     // お気に入り登録・解除トグル処理
     Route::post('/books/{book}/favorite', [FavoriteController::class, 'toggle'])->name('favorites.toggle');
 
-    // 認証済みユーザー向けの読書レポートルーティング
+    // マイ読書レポート
     Route::get('/reports', [BookReportController::class, 'index'])->name('reports.index');
 
     // 読書計画(読了)
@@ -56,7 +56,7 @@ Route::middleware(['auth'])->group(function () {
         'destroy' => 'reading-plans.destroy',
     ]);
 
-    // 通知関連のルート
+    // 通知関連
     Route::get('notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::post('notifications/{notification}/read', [NotificationController::class, 'read'])->name('notifications.read');
 });

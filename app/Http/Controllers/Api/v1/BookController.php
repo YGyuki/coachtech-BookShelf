@@ -36,13 +36,10 @@ class BookController extends Controller
 
     public function store(StoreBookRequest $request)
     {
-        //Sanctum導入前の為、仮設定
-        $userId = auth()->id() ?? 1;
-
         $validated = $request->validated();
 
         $book = Book::create([
-            'user_id' => $userId,
+            'user_id' => $request->user()->id,
             'title' => $validated['title'],
             'author' => $validated['author'],
             'isbn' => $validated['isbn'],
@@ -68,6 +65,9 @@ class BookController extends Controller
             ], 404);
         }
 
+        // 認可チェック
+        $this->authorize('update', $book);
+
         $validated = $request->validated();
 
         $book->update($validated);
@@ -77,7 +77,9 @@ class BookController extends Controller
         $book->load(['genres', 'reviews.user']);
 
         return (new BookResource($book))
-            ->additional(['message' => '書籍情報を更新しました。']);
+            ->additional(['message' => '書籍情報を更新しました。'])
+            ->response()
+            ->setStatusCode(200);
     }
 
     public function destroy($id)
@@ -88,6 +90,9 @@ class BookController extends Controller
                 'error' => '指定された書籍が見つかりません。'
             ], 404);
         }
+
+        // 認可チェック
+        $this->authorize('update', $book);
 
         $book->delete();
 
