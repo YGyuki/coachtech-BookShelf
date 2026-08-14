@@ -17,9 +17,10 @@ class CheckReadingPlans extends Command
     {
         $today = Carbon::today();
 
-        // 完了（Completed）以外の計画をすべて取得
+        // 完了（Completed）および すでに期限切れ（Expired）以外の計画をすべて取得
         $activePlans = ReadingPlan::whereNotIn('status', [
             ReadingPlanStatus::Completed->value,
+            ReadingPlanStatus::Expired->value,
         ])
             ->with(['user', 'book'])
             ->get();

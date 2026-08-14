@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources;
 
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
@@ -23,7 +22,7 @@ class BookCollection extends ResourceCollection
                     'title' => $book->title,
                     'author' => $book->author,
                     'isbn' => $book->isbn,
-                    'published_date' => $book->published_date ? Carbon::parse($book->published_date)->format('Y-m-d') : null,
+                    'published_date' => $book->published_date,
                     'genres_id' => $book->genres->pluck('id'),
                     'genres_name' => $book->genres->pluck('name'),
                     'average_rating' => round($book->reviews_avg_rating ?? 0, 1),
