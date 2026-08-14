@@ -4,13 +4,23 @@ namespace Tests\Feature\Controllers;
 
 use App\Models\Book;
 use App\Models\Genre;
+use App\Models\Review;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 class BookControllerTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        // ブレード内のViteアセット読み込みによる500クラッシュを確実に防止
+        $this->withoutVite();
+    }
 
     /** @test */
     public function 書籍を新規登録し、ジャンルを同期してリダイレクトする(): void
@@ -166,31 +176,6 @@ class BookControllerTest extends TestCase
     }
 
     /** @test */
-    public function 作成者以外が更新しようとすると403エラーを返す(): void
-    {
-        // 1. Arrange
-        $owner = User::factory()->create();
-        $otherUser = User::factory()->create();
-        $book = Book::factory()->create(['user_id' => $owner->id]); // 所有者はowner
-        $genre = Genre::factory()->create();
-
-        $updateData = [
-            'title' => '不正な更新試み',
-            'author' => '悪意あるユーザー',
-            'isbn' => '9876543210987',
-            'published_date' => '2026-05-01',
-            'genres' => [$genre->id],
-        ];
-
-        // 2. Act
-        // otherUser（作成者以外）としてリクエストを送信
-        $response = $this->actingAs($otherUser)->put(route('books.update', $book), $updateData);
-
-        // 3. Assert
-        $response->assertStatus(403); // 認可エラーになること
-    }
-
-    /** @test */
     public function 自分自身のISBNコードであれば重複エラーにならず更新できる(): void
     {
         // 1. Arrange
@@ -203,12 +188,15 @@ class BookControllerTest extends TestCase
             'title' => '元のタイトル',
         ]);
 
+        // Factoryが作った ISO形式の文字列を、「Y-m-d」に強制変換する
+        $safeDate = Carbon::parse($book->published_date)->format('Y-m-d');
+
         // ISBNは変えずに、タイトルだけ変更するデータを用意
         $updateData = [
             'title' => 'タイトルだけ更新',
             'author' => $book->author,
             'isbn' => '1234567890123',
-            'published_date' => $book->published_date,
+            'published_date' => $safeDate,
             'genres' => [$genre->id],
         ];
 
@@ -258,6 +246,31 @@ class BookControllerTest extends TestCase
     }
 
     /** @test */
+    public function 作成者以外が更新しようとすると403エラーを返す(): void
+    {
+        // 1. Arrange
+        $owner = User::factory()->create();
+        $otherUser = User::factory()->create();
+        $book = Book::factory()->create(['user_id' => $owner->id]); // 所有者はowner
+        $genre = Genre::factory()->create();
+
+        $updateData = [
+            'title' => '不正な更新試み',
+            'author' => '悪意あるユーザー',
+            'isbn' => '9876543210987',
+            'published_date' => '2026-05-01',
+            'genres' => [$genre->id],
+        ];
+
+        // 2. Act
+        // otherUser（作成者以外）としてリクエストを送信
+        $response = $this->actingAs($otherUser)->put(route('books.update', $book), $updateData);
+
+        // 3. Assert
+        $response->assertStatus(403); // 認可エラーになること
+    }
+
+    /** @test */
     public function 作成者であれば書籍を削除できる(): void
     {
         // 1. Arrange
@@ -288,5 +301,174 @@ class BookControllerTest extends TestCase
         // 3. Assert
         $response->assertStatus(403);
         $this->assertDatabaseHas('books', ['id' => $book->id]); // DBから消えていないこと
+    }
+
+    /** @test */
+    public function 書籍一覧にてタイトルまたは著者名の部分一致検索ができること(): void
+    {
+        // 1. Arrange
+        Book::factory()->create(['title' => 'Laravel入門', 'author' => '山田太郎']);
+        Book::factory()->create(['title' => 'Vue.js実践', 'author' => '鈴木一郎']);
+        Book::factory()->create(['title' => 'PHP基礎', 'author' => '山田花子']);
+
+        // 2. Act & 3. Assert
+        // 「Laravel」でタイトル検索
+        $response1 = $this->get('/books?keyword=Laravel');
+        $response1->assertSee('Laravel入門')->assertDontSee('Vue.js実践');
+
+        // 「山田」で著者名検索
+        $response2 = $this->get('/books?keyword=山田');
+        $response2->assertSee('Laravel入門')->assertSee('PHP基礎')->assertDontSee('Vue.js実践');
+    }
+
+    /** @test */
+    public function 書籍一覧にて指定したジャンルで抽出ができること(): void
+    {
+        // 1. Arrange
+        $genreA = Genre::factory()->create(['name' => '技術書']);
+        $genreB = Genre::factory()->create(['name' => '小説']);
+
+        // ジャンルが紐付いた書籍を生成
+        Book::factory()
+            ->hasAttached($genreA)
+            ->create(['title' => '達人プログラマー']);
+
+        Book::factory()
+            ->hasAttached($genreB)
+            ->create(['title' => '吾輩は猫である']);
+
+        // 2. Act
+        $response = $this->get("/books?genre={$genreA->id}");
+
+        // 3. Assert
+        $response->assertSee('達人プログラマー')->assertDontSee('吾輩は猫である');
+    }
+
+    /** @test */
+    public function 書籍一覧にて指定した各種ソート順で正しく並び替えられること(): void
+    {
+        // 1. Arrange
+        // テストデータの準備（作成日、タイトルの異なる本を用意）
+        $book1 = Book::factory()->create([
+            'title' => 'AAAの本',
+            'created_at' => now()->subDays(1),
+        ]);
+        $book2 = Book::factory()->create([
+            'title' => 'BBBの本',
+            'created_at' => now()->subDays(2),
+        ]);
+        $book3 = Book::factory()->create([
+            'title' => 'CCCの本',
+            'created_at' => now(),
+        ]);
+
+        // 各書籍にレビューデータを紐付ける
+        // book1 は 平均3.0点
+        Review::factory()->create(['book_id' => $book1->id, 'rating' => 3.0]);
+        // book2 は 平均4.5点
+        Review::factory()->create(['book_id' => $book2->id, 'rating' => 4.5]);
+        // book3 は 平均5.0点
+        Review::factory()->create(['book_id' => $book3->id, 'rating' => 5.0]);
+
+        // 2. Act & 3. Assert
+
+        // ① 登録日が新しい順 (book3 -> book1 -> book2)
+        $this->get('/books?sort=newest')
+            ->assertSeeInOrder(['CCCの本', 'AAAの本', 'BBBの本']);
+
+        // ② 登録日が古い順 (book2 -> book1 -> book3)
+        $this->get('/books?sort=oldest')
+            ->assertSeeInOrder(['BBBの本', 'AAAの本', 'CCCの本']);
+
+        // ③ タイトル順 (book1 -> book2 -> book3)
+        $this->get('/books?sort=title')
+            ->assertSeeInOrder(['AAAの本', 'BBBの本', 'CCCの本']);
+
+        // ④ 平均評価が高い順 (book3(5.0) -> book2(4.5) -> book1(3.0))
+        $this->get('/books?sort=rating')
+            ->assertSeeInOrder(['CCCの本', 'BBBの本', 'AAAの本']);
+    }
+
+    /** ISBN検索
+     */
+    /** @test */
+    public function 正しい13桁のISBNコードで検索した場合にGoogleBooksAPIから整形された書籍データが返却されること(): void
+    {
+        // フェイク（モック）されていない外部通信が発生した場合に、本物の通信をさせずにエラー（例外）を投げる設定
+        Http::preventStrayRequests();
+
+        // 1. Arrange
+        $user = User::factory()->create();
+        $isbn = '9784873119076';
+        $apiUrl = 'https://googleapis.com*';
+
+        // Google Books APIのレスポンスをフェイク（モック）
+        Http::fake([
+            '*' => Http::response([
+                'totalItems' => 1,
+                'items' => [
+                    [
+                        'volumeInfo' => [
+                            'title' => '達人プログラマー',
+                            'authors' => ['Andrew Hunt', 'David Thomas'],
+                            'description' => '熟達した職人技について解説。',
+                            'imageLinks' => ['thumbnail' => 'http://example.com'], // ※エラーに合せて修正
+                            'publishedDate' => '2020-11-20',
+                            'industryIdentifiers' => [
+                                ['type' => 'ISBN_13', 'identifier' => $isbn]
+                            ]
+                        ]
+                    ]
+                ]
+            ], 200)
+        ]);
+
+        // 2. Act
+        $response = $this->actingAs($user)->getJson("/books/isbn/{$isbn}");
+
+        // 3. Assert
+        $response->assertStatus(200)
+            ->assertJson([
+                'title' => '達人プログラマー',
+                'author' => 'Andrew Hunt, David Thomas',
+                'description' => '熟達した職人技について解説。',
+                'image_url' => 'http://example.com',
+                'published_date' => '2020-11-20',
+            ]);
+    }
+
+    /** @test */
+    public function 存在しないISBNまたは返却データのISBNが一致しない場合に404エラーが返却されること(): void
+    {
+        // フェイク（モック）されていない外部通信が発生した場合に、本物の通信をさせずにエラー（例外）を投げる設定
+        Http::preventStrayRequests();
+
+        // 1. Arrange
+        $user = User::factory()->create();
+        $inputIsbn = '9784101010012'; // 偽物のISBN
+        $returnedIsbn = '9784101010014'; // Googleが自動補正し返してきた別本のISBN
+
+        Http::fake([
+            '*' => Http::response([
+                'totalItems' => 1,
+                'items' => [
+                    [
+                        'volumeInfo' => [
+                            'title' => 'こころ',
+                            'industryIdentifiers' => [
+                                ['type' => 'ISBN_13', 'identifier' => $returnedIsbn]
+                            ]
+                        ]
+                    ]
+                ]
+            ], 200)
+        ]);
+
+        // 2. Act
+        $response = $this->actingAs($user)->getJson("/books/isbn/{$inputIsbn}");
+
+        // 3. Assert
+        $response->assertStatus(404)
+            ->assertJson(['error' => '該当する書籍情報が見つかりませんでした。']);
     }
 }
