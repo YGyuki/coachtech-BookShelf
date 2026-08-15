@@ -6,7 +6,9 @@ use App\Models\Book;
 use App\Models\Genre;
 use App\Models\Review;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class BookApiControllerTest extends TestCase
@@ -18,6 +20,7 @@ class BookApiControllerTest extends TestCase
     {
         // 1. Arrange
         $user = User::factory()->create(['id' => 1, 'name' => 'テストユーザー']);
+        $otherUser = User::factory()->create();
         $genre = Genre::factory()->create(['name' => '技術書']);
 
         // テスト用に書籍を1冊作成し、ジャンルとレビューを紐付ける
@@ -26,14 +29,14 @@ class BookApiControllerTest extends TestCase
             'title' => 'API一覧テスト書籍',
             'author' => 'API著者',
             'isbn' => '1234567890123',
-            'published_date' => '2026-01-01',
+            'published_date' => Carbon::parse('2026-01-01'),
         ]);
 
         $book->genres()->attach($genre->id);
 
         // 平均評価の計算ロジック（4点と5点 = 平均4.5点）を検証するため、レビューを2件作成
         Review::factory()->create(['book_id' => $book->id, 'user_id' => $user->id, 'rating' => 4]);
-        Review::factory()->create(['book_id' => $book->id, 'user_id' => $user->id, 'rating' => 5]);
+        Review::factory()->create(['book_id' => $book->id, 'user_id' => $otherUser->id, 'rating' => 5]);
 
         // 2. Act
         $response = $this->getJson('/api/v1/books');
@@ -84,7 +87,7 @@ class BookApiControllerTest extends TestCase
             'title' => 'API詳細テスト書籍',
             'author' => '小説著者',
             'isbn' => '1111222233334',
-            'published_date' => '2026-05-01',
+            'published_date' => Carbon::parse('2026-05-01'),
             'description' => '詳細説明文',
             'image_url' => 'https://example.com',
         ]);
@@ -146,10 +149,11 @@ class BookApiControllerTest extends TestCase
     }
 
     /** @test */
-    public function API経由で書籍を新規登録するとJSON形式データとステータス201を返す(): void
+    public function API経由で認証済みユーザーが書籍を新規登録するとJSON形式データとステータス201を返す(): void
     {
         // 1. Arrange
-        $user = User::factory()->create(['id' => 1]);
+        $owner = User::factory()->create();
+        Sanctum::actingAs($owner);
         $genres = Genre::factory()->count(2)->create();
 
         // 全てのバリデーション（StoreBookRequest）を確実に通過する正しいデータ
@@ -167,11 +171,11 @@ class BookApiControllerTest extends TestCase
         $response = $this->postJson('/api/v1/books', $validData);
 
         // 3. Assert
-        $response->assertStatus(201);
-        $response->assertJsonFragment(['message' => '書籍を登録しました。']);
+        $response->assertStatus(201)
+            ->assertJson(['message' => '書籍を登録しました。',]);
 
         $this->assertDatabaseHas('books', [
-            'user_id' => $user->id,
+            'user_id' => $owner->id,
             'title' => 'APIテスト書籍',
         ]);
 
@@ -180,10 +184,32 @@ class BookApiControllerTest extends TestCase
     }
 
     /** @test */
+    public function API経由で未認証ユーザーが書籍を新規登録するとステータス401を返す(): void
+    {
+        // 1. Arrange
+        $book = [
+            'title' => '未認証テスト書籍',
+            'author' => '未認証著者',
+            'genre_id' => 1,
+            'published_date' => '2026-01-01',
+        ];
+
+        // 2. Act
+        $response = $this->postJson('/api/v1/books', $book);
+
+        // 3. Assert
+        $response->assertStatus(401)
+            ->assertJsonFragment([
+                'message' => '認証されていません。有効なトークンを提示してください。'
+            ]);
+    }
+
+    /** @test */
     public function API経由の登録時にバリデーションエラーが発生するとステータス422とエラーメッセージを返す(): void
     {
         // 1. Arrange
-        $user = User::factory()->create(['id' => 1]);
+        $owner = User::factory()->create();
+        Sanctum::actingAs($owner);
 
         // 必須項目が空、不正なISBN、不正な日付などの違反データ
         $invalidData = [
@@ -219,7 +245,8 @@ class BookApiControllerTest extends TestCase
     public function API経由の登録時に既に登録されているISBNコードは登録できない(): void
     {
         // 1. Arrange
-        User::factory()->create(['id' => 1]);
+        $owner = User::factory()->create();
+        Sanctum::actingAs($owner);
         $genre = Genre::factory()->create();
 
         // 既に存在するISBNの本を登録しておく
@@ -246,7 +273,8 @@ class BookApiControllerTest extends TestCase
     public function API経由の登録時に存在しないジャンルIDが送信された場合は登録できない(): void
     {
         // 1. Arrange
-        User::factory()->create(['id' => 1]);
+        $owner = User::factory()->create();
+        Sanctum::actingAs($owner);
 
         $invalidGenreData = [
             'title' => 'テスト書籍',
@@ -265,13 +293,13 @@ class BookApiControllerTest extends TestCase
         $this->assertDatabaseCount('books', 0);
     }
 
-
     /** @test */
-    public function API経由で存在する書籍を更新すると書籍情報を書き換えてJSONデータを返す(): void
+    public function API経由で存在する書籍を所有者が更新すると書籍情報を書き換えてJSONデータを返す(): void
     {
         // 1. Arrange
-        $user = User::factory()->create(['id' => 1]);
-        $book = Book::factory()->create(['user_id' => $user->id, 'isbn' => '1111222233334']);
+        $owner = User::factory()->create();
+        Sanctum::actingAs($owner);
+        $book = Book::factory()->create(['user_id' => $owner->id, 'isbn' => '1111222233334']);
         $genres = Genre::factory()->count(2)->create();
 
         $updateData = [
@@ -296,10 +324,39 @@ class BookApiControllerTest extends TestCase
     }
 
     /** @test */
+    public function API経由で他人の書籍を更新しようとすると403エラーを返す(): void
+    {
+        // 1. Arrange
+        $owner = User::factory()->create();
+        $otherUser = User::factory()->create();
+        // 所有者ではないユーザーとしてログイン
+        Sanctum::actingAs($otherUser);
+
+        $book = Book::factory()->create(['user_id' => $owner->id]);
+        $genre = Genre::factory()->create();
+        $updateData = [
+            'title' => '不正な書き換え',
+            'author' => 'テスト著者',
+            'genres' => $genre->pluck('id'),
+            'published_date' => '2026-05-01',
+        ];
+
+        // 2. Act
+        $response = $this->putJson("/api/v1/books/{$book->id}", $updateData);
+
+        // 3. Assert
+        $response->assertStatus(403)
+            ->assertJson([
+                'message' => 'この操作を行う権限がありません（書籍の所有者ではありません）。',
+            ]);
+    }
+
+    /** @test */
     public function API経由の更新時に他人が既に登録しているISBNコードへの変更はエラーになる(): void
     {
         // 1. Arrange
         $user = User::factory()->create(['id' => 1]);
+        Sanctum::actingAs($user);
         $genre = Genre::factory()->create();
 
         $myBook = Book::factory()->create(['user_id' => $user->id, 'isbn' => '1111111111111']);
@@ -325,7 +382,8 @@ class BookApiControllerTest extends TestCase
     public function API経由で存在しない書籍IDを指定して更新しようとすると404エラーを返す(): void
     {
         // 1. Arrange
-        User::factory()->create(['id' => 1]);
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
         $genre = Genre::factory()->create();
         $nonExistentId = 99999;
 
@@ -346,11 +404,12 @@ class BookApiControllerTest extends TestCase
     }
 
     /** @test */
-    public function API経由で存在する書籍を削除するとステータス204を返す(): void
+    public function API経由で存在する書籍を所有者が削除するとステータス204を返す(): void
     {
         // 1. Arrange
-        $user = User::factory()->create();
-        $book = Book::factory()->create(['user_id' => $user->id]);
+        $owner = User::factory()->create();
+        Sanctum::actingAs($owner);
+        $book = Book::factory()->create(['user_id' => $owner->id]);
 
         // 2. Act
         $response = $this->deleteJson("/api/v1/books/{$book->id}");
@@ -361,9 +420,37 @@ class BookApiControllerTest extends TestCase
     }
 
     /** @test */
+    public function API経由で他人の書籍を削除しようとすると403エラーを返す(): void
+    {
+        // 1. Arrange
+        $owner = User::factory()->create();
+        $otherUser = User::factory()->create();
+        // 所有者ではないユーザーとしてログイン
+        Sanctum::actingAs($otherUser);
+
+        $book = Book::factory()->create(['user_id' => $owner->id]);
+
+        // 2. Act
+        $response = $this->deleteJson("/api/v1/books/{$book->id}");
+
+        // 3. Assert
+        $response->assertStatus(403)
+            ->assertJson([
+                'message' => 'この操作を行う権限がありません（書籍の所有者ではありません）。',
+            ]);
+
+        // データベース内のデータが削除されずに存在することを検証
+        $this->assertDatabaseHas('books', [
+            'id' => $book->id,
+        ]);
+    }
+
+    /** @test */
     public function API経由で存在しない書籍IDを指定して削除しようとすると404エラーを返す(): void
     {
         // 1. Arrange
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
         $nonExistentId = 99999;
 
         // 2. Act
