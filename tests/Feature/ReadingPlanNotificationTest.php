@@ -6,7 +6,6 @@ use App\Models\User;
 use App\Models\Book;
 use App\Models\ReadingPlan;
 use App\Enums\ReadingPlanStatus;
-use App\Notifications\GeneralNotification;
 use App\Notifications\ReadingPlanReminder;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -65,14 +64,14 @@ class ReadingPlanNotificationTest extends TestCase
                 && str_contains($data['title'], '期日まであと3日です');
         });
 
-        // ② 当日通知の検証（'today' から 'on_due_date' に修正、文章も合わせる）
+        // ② 当日通知の検証
         Notification::assertSentTo($user, ReadingPlanReminder::class, function ($notification) use ($user) {
             $data = $notification->toDatabase($user);
             return $data['timing'] === 'on_due_date'
                 && str_contains($data['title'], '読書目標が期日');
         });
 
-        // ③ 3日後通知の検証（文章を現在のクラスの仕様に合わせる）
+        // ③ 3日後通知の検証
         Notification::assertSentTo($user, ReadingPlanReminder::class, function ($notification) use ($user) {
             $data = $notification->toDatabase($user);
             return $data['timing'] === 'three_days_after'
@@ -88,7 +87,7 @@ class ReadingPlanNotificationTest extends TestCase
         $bookForExpired = Book::factory()->create();
         $bookForToday = Book::factory()->create();
 
-        // 過去の日付（昨日＝1日前）の未完了データを準備
+        // 過去の日付の未完了データを準備（更新対象）
         $expiredPlan = ReadingPlan::create([
             'user_id' => $user->id,
             'book_id' => $bookForExpired->id,
@@ -96,7 +95,7 @@ class ReadingPlanNotificationTest extends TestCase
             'status' => ReadingPlanStatus::InProgress->value,
         ]);
 
-        // 今日が期日の未完了データ（期限切れにならない想定）
+        // 今日が期日の未完了データ(更新されない)
         $todayPlan = ReadingPlan::create([
             'user_id' => $user->id,
             'book_id' => $bookForToday->id,
@@ -114,7 +113,7 @@ class ReadingPlanNotificationTest extends TestCase
             $expiredPlan->refresh()->status->value
         );
 
-        // 当日の計画はステータスが変わっていない（in_progressのまま）ことを検証
+        // 当日の計画はステータスが変わっていないことを検証
         $this->assertEquals(
             ReadingPlanStatus::InProgress->value,
             $todayPlan->refresh()->status->value
@@ -127,7 +126,7 @@ class ReadingPlanNotificationTest extends TestCase
         // 1. Arrange
         $user = User::factory()->create();
 
-        // テスト用の通知データをユーザーに送信して未読状態を作る
+        // 通知データをユーザーに送信して未読状態を作る
         $book = Book::factory()->create();
         $plan = ReadingPlan::create([
             'user_id' => $user->id,
@@ -147,7 +146,6 @@ class ReadingPlanNotificationTest extends TestCase
         $response = $this->actingAs($user)->post(route('notifications.read', $notification->id));
 
         // 3. Assert
-        // リダイレクト（302）されることを検証
         $response->assertStatus(302);
 
         // ユーザーの未読通知カウントが 0 になっていることを検証

@@ -141,7 +141,7 @@ class ReadingPlanControllerTest extends TestCase
     }
 
     /** @test */
-    public function 他人の読書計画を編集しようとすると認可エラーでブロックされる(): void
+    public function 他人の読書計画を編集または削除しようとすると認可エラーでブロックされる(): void
     {
         // 1. Arrange
         $userA = User::factory()->create();
