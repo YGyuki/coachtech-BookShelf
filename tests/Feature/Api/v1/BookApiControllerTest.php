@@ -20,6 +20,7 @@ class BookApiControllerTest extends TestCase
     {
         // 1. Arrange
         $user = User::factory()->create(['id' => 1, 'name' => 'テストユーザー']);
+        $otherUser = User::factory()->create();
         $genre = Genre::factory()->create(['name' => '技術書']);
 
         // テスト用に書籍を1冊作成し、ジャンルとレビューを紐付ける
@@ -35,9 +36,8 @@ class BookApiControllerTest extends TestCase
 
         // 平均評価の計算ロジック（4点と5点 = 平均4.5点）を検証するため、レビューを2件作成
         Review::factory()->create(['book_id' => $book->id, 'user_id' => $user->id, 'rating' => 4]);
-        Review::factory()->create(['book_id' => $book->id, 'user_id' => $user->id, 'rating' => 5]);
+        Review::factory()->create(['book_id' => $book->id, 'user_id' => $otherUser->id, 'rating' => 5]);
 
-        \Log::info(Book::first()->toArray()); // ★DBに実際に保存された生データをログに出力
         // 2. Act
         $response = $this->getJson('/api/v1/books');
 
@@ -292,7 +292,6 @@ class BookApiControllerTest extends TestCase
         $response->assertJsonValidationErrors(['genres']);
         $this->assertDatabaseCount('books', 0);
     }
-
 
     /** @test */
     public function API経由で存在する書籍を所有者が更新すると書籍情報を書き換えてJSONデータを返す(): void
