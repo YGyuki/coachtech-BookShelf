@@ -223,7 +223,9 @@ docker run --rm -u "$(id -u):$(id -g)" -v "$(pwd):/var/www/html" -w /var/www/htm
 ```bash
 # パッケージのインストール
 ./vendor/bin/sail npm install
+```
 
+```bash
 # 開発サーバーの起動（起動したままにしておく必要があります）
 ./vendor/bin/sail npm run dev
 ```
