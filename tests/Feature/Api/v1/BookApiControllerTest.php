@@ -16,7 +16,7 @@ class BookApiControllerTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function API経由で書籍一覧を取得するとページネーションされたJSONデータとステータス200を返す(): void
+    public function ap_i経由で書籍一覧を取得するとページネーションされた_jso_nデータとステータス200を返す(): void
     {
         // 1. Arrange
         $user = User::factory()->create(['id' => 1, 'name' => 'テストユーザー']);
@@ -57,8 +57,8 @@ class BookApiControllerTest extends TestCase
                     'genres_name',
                     'average_rating',
                     'reviews_count',
-                ]
-            ]
+                ],
+            ],
         ]);
 
         // 実際に返ってきた整形成果（1件目のデータの中身）を詳細にチェック
@@ -76,7 +76,7 @@ class BookApiControllerTest extends TestCase
     }
 
     /** @test */
-    public function API経由で存在する書籍IDを指定するとその書籍の整形されたJSONデータとステータス200を返す(): void
+    public function ap_i経由で存在する書籍_i_dを指定するとその書籍の整形された_jso_nデータとステータス200を返す(): void
     {
         // 1. Arrange
         $user = User::factory()->create(['id' => 1, 'name' => 'レビュー投稿者']);
@@ -126,14 +126,14 @@ class BookApiControllerTest extends TestCase
                         'rating' => 5,
                         'comment' => '最高の一冊。',
                         'created_at' => $review->created_at->format('Y-m-d H:i:s'),
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ]);
     }
 
     /** @test */
-    public function API経由で存在しない書籍IDを指定するとステータス404とエラーメッセージを返す(): void
+    public function ap_i経由で存在しない書籍_i_dを指定するとステータス404とエラーメッセージを返す(): void
     {
         // 1. Arrange
         $nonExistentId = 99999; // 存在しないID
@@ -144,12 +144,12 @@ class BookApiControllerTest extends TestCase
         // 3. Assert
         $response->assertStatus(404);
         $response->assertJson([
-            'error' => '指定された書籍が見つかりません。'
+            'error' => '指定された書籍が見つかりません。',
         ]);
     }
 
     /** @test */
-    public function API経由で認証済みユーザーが書籍を新規登録するとJSON形式データとステータス201を返す(): void
+    public function ap_i経由で認証済みユーザーが書籍を新規登録すると_jso_n形式データとステータス201を返す(): void
     {
         // 1. Arrange
         $owner = User::factory()->create();
@@ -172,7 +172,7 @@ class BookApiControllerTest extends TestCase
 
         // 3. Assert
         $response->assertStatus(201)
-            ->assertJson(['message' => '書籍を登録しました。',]);
+            ->assertJson(['message' => '書籍を登録しました。']);
 
         $this->assertDatabaseHas('books', [
             'user_id' => $owner->id,
@@ -184,7 +184,7 @@ class BookApiControllerTest extends TestCase
     }
 
     /** @test */
-    public function API経由で未認証ユーザーが書籍を新規登録するとステータス401を返す(): void
+    public function ap_i経由で未認証ユーザーが書籍を新規登録するとステータス401を返す(): void
     {
         // 1. Arrange
         $book = [
@@ -200,12 +200,12 @@ class BookApiControllerTest extends TestCase
         // 3. Assert
         $response->assertStatus(401)
             ->assertJsonFragment([
-                'message' => '認証されていません。有効なトークンを提示してください。'
+                'message' => '認証されていません。有効なトークンを提示してください。',
             ]);
     }
 
     /** @test */
-    public function API経由の登録時にバリデーションエラーが発生するとステータス422とエラーメッセージを返す(): void
+    public function ap_i経由の登録時にバリデーションエラーが発生するとステータス422とエラーメッセージを返す(): void
     {
         // 1. Arrange
         $owner = User::factory()->create();
@@ -235,14 +235,14 @@ class BookApiControllerTest extends TestCase
             'isbn',
             'published_date',
             'image_url',
-            'genres'
+            'genres',
         ]);
 
         $this->assertDatabaseCount('books', 0);
     }
 
     /** @test */
-    public function API経由の登録時に既に登録されているISBNコードは登録できない(): void
+    public function ap_i経由の登録時に既に登録されている_isb_nコードは登録できない(): void
     {
         // 1. Arrange
         $owner = User::factory()->create();
@@ -270,7 +270,7 @@ class BookApiControllerTest extends TestCase
     }
 
     /** @test */
-    public function API経由の登録時に存在しないジャンルIDが送信された場合は登録できない(): void
+    public function ap_i経由の登録時に存在しないジャンル_i_dが送信された場合は登録できない(): void
     {
         // 1. Arrange
         $owner = User::factory()->create();
@@ -294,7 +294,7 @@ class BookApiControllerTest extends TestCase
     }
 
     /** @test */
-    public function API経由で存在する書籍を所有者が更新すると書籍情報を書き換えてJSONデータを返す(): void
+    public function ap_i経由で存在する書籍を所有者が更新すると書籍情報を書き換えて_jso_nデータを返す(): void
     {
         // 1. Arrange
         $owner = User::factory()->create();
@@ -324,7 +324,7 @@ class BookApiControllerTest extends TestCase
     }
 
     /** @test */
-    public function API経由で他人の書籍を更新しようとすると403エラーを返す(): void
+    public function ap_i経由で他人の書籍を更新しようとすると403エラーを返す(): void
     {
         // 1. Arrange
         $owner = User::factory()->create();
@@ -352,7 +352,7 @@ class BookApiControllerTest extends TestCase
     }
 
     /** @test */
-    public function API経由の更新時に他人が既に登録しているISBNコードへの変更はエラーになる(): void
+    public function ap_i経由の更新時に他人が既に登録している_isb_nコードへの変更はエラーになる(): void
     {
         // 1. Arrange
         $user = User::factory()->create(['id' => 1]);
@@ -379,7 +379,7 @@ class BookApiControllerTest extends TestCase
     }
 
     /** @test */
-    public function API経由で存在しない書籍IDを指定して更新しようとすると404エラーを返す(): void
+    public function ap_i経由で存在しない書籍_i_dを指定して更新しようとすると404エラーを返す(): void
     {
         // 1. Arrange
         $user = User::factory()->create();
@@ -404,7 +404,7 @@ class BookApiControllerTest extends TestCase
     }
 
     /** @test */
-    public function API経由で存在する書籍を所有者が削除するとステータス204を返す(): void
+    public function ap_i経由で存在する書籍を所有者が削除するとステータス204を返す(): void
     {
         // 1. Arrange
         $owner = User::factory()->create();
@@ -420,7 +420,7 @@ class BookApiControllerTest extends TestCase
     }
 
     /** @test */
-    public function API経由で他人の書籍を削除しようとすると403エラーを返す(): void
+    public function ap_i経由で他人の書籍を削除しようとすると403エラーを返す(): void
     {
         // 1. Arrange
         $owner = User::factory()->create();
@@ -446,7 +446,7 @@ class BookApiControllerTest extends TestCase
     }
 
     /** @test */
-    public function API経由で存在しない書籍IDを指定して削除しようとすると404エラーを返す(): void
+    public function ap_i経由で存在しない書籍_i_dを指定して削除しようとすると404エラーを返す(): void
     {
         // 1. Arrange
         $user = User::factory()->create();

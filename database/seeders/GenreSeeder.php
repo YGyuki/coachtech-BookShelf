@@ -25,7 +25,7 @@ class GenreSeeder extends Seeder
             '旅行',
         ];
 
-        //name重複をチェックし、存在しなければ作成する
+        // name重複をチェックし、存在しなければ作成する
         foreach ($genres as $genre) {
             Genre::firstOrCreate(
                 ['name' => $genre]

@@ -16,7 +16,7 @@ class AuthController extends Controller
         $user = User::where('email', $validated['email'])->first();
 
         // ユーザーの存在確認とパスワードの一致確認
-        if (!$user || !Hash::check($validated['password'], $user->password)) {
+        if (! $user || ! Hash::check($validated['password'], $user->password)) {
             return response()->json(['message' => 'ログイン情報が正しくありません。'], 422);
         }
 

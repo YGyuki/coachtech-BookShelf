@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\BookCollection;
-use App\Http\Resources\BookResource;
 use App\Http\Requests\StoreBookRequest;
 use App\Http\Requests\UpdateBookRequest;
+use App\Http\Resources\BookCollection;
+use App\Http\Resources\BookResource;
 use App\Models\Book;
 
 class BookController extends Controller
@@ -25,9 +25,9 @@ class BookController extends Controller
     {
         $book = Book::with(['genres', 'reviews.user'])->find($id);
 
-        if (!$book) {
+        if (! $book) {
             return response()->json([
-                'error' => '指定された書籍が見つかりません。'
+                'error' => '指定された書籍が見つかりません。',
             ], 404);
         }
 
@@ -59,9 +59,9 @@ class BookController extends Controller
     public function update(UpdateBookRequest $request, $id)
     {
         $book = Book::find($id);
-        if (!$book) {
+        if (! $book) {
             return response()->json([
-                'error' => '指定された書籍が見つかりません。'
+                'error' => '指定された書籍が見つかりません。',
             ], 404);
         }
 
@@ -85,9 +85,9 @@ class BookController extends Controller
     public function destroy($id)
     {
         $book = Book::find($id);
-        if (!$book) {
+        if (! $book) {
             return response()->json([
-                'error' => '指定された書籍が見つかりません。'
+                'error' => '指定された書籍が見つかりません。',
             ], 404);
         }
 

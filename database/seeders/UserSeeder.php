@@ -23,7 +23,7 @@ class UserSeeder extends Seeder
             ['name' => '高橋健太', 'email' => 'takahashi@example.com', 'password' => $hashedPassword],
         ];
 
-        //email重複をチェックし、存在しなければ作成する
+        // email重複をチェックし、存在しなければ作成する
         foreach ($users as $user) {
             User::firstOrCreate(
                 ['email' => $user['email']], // 検索条件

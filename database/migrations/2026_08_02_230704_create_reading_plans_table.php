@@ -4,7 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      */
@@ -19,7 +20,7 @@ return new class extends Migration {
             $table->string('status', 20)->default('in_progress');
             $table->timestamps();
 
-            //同じユーザーが同じ書籍で複数回読書計画を作成するのを防ぐ
+            // 同じユーザーが同じ書籍で複数回読書計画を作成するのを防ぐ
             $table->unique(['user_id', 'book_id']);
         });
     }

@@ -10,7 +10,6 @@ use Tests\TestCase;
 
 class ReviewControllerTest extends TestCase
 {
-
     use RefreshDatabase;
 
     /** @test */

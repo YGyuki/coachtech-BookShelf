@@ -2,10 +2,10 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
+use App\Enums\ReadingPlanStatus;
 use App\Models\Book;
 use App\Models\ReadingPlan;
-use App\Enums\ReadingPlanStatus;
+use App\Models\User;
 use App\Notifications\ReadingPlanReminder;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -60,6 +60,7 @@ class ReadingPlanNotificationTest extends TestCase
         // ① 3日前通知の検証
         Notification::assertSentTo($user, ReadingPlanReminder::class, function ($notification) use ($user) {
             $data = $notification->toDatabase($user);
+
             return $data['timing'] === 'three_days_before'
                 && str_contains($data['title'], '期日まであと3日です');
         });
@@ -67,6 +68,7 @@ class ReadingPlanNotificationTest extends TestCase
         // ② 当日通知の検証
         Notification::assertSentTo($user, ReadingPlanReminder::class, function ($notification) use ($user) {
             $data = $notification->toDatabase($user);
+
             return $data['timing'] === 'on_due_date'
                 && str_contains($data['title'], '読書目標が期日');
         });
@@ -74,6 +76,7 @@ class ReadingPlanNotificationTest extends TestCase
         // ③ 3日後通知の検証
         Notification::assertSentTo($user, ReadingPlanReminder::class, function ($notification) use ($user) {
             $data = $notification->toDatabase($user);
+
             return $data['timing'] === 'three_days_after'
                 && str_contains($data['title'], '3日が過ぎました');
         });

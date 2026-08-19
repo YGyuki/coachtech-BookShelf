@@ -84,12 +84,12 @@ class BookReportController extends Controller
         $genreStats = collect();
 
         foreach ($reviews as $review) {
-            if (!$review->book) {
+            if (! $review->book) {
                 continue;
             }
             // 書籍に紐づく全ジャンルをループ ジャンルごとに箱分けし、評価点を追加していく
             foreach ($review->book->genres as $genre) {
-                if (!$genreStats->has($genre->id)) {
+                if (! $genreStats->has($genre->id)) {
                     $genreStats->put($genre->id, [
                         'genre' => $genre,
                         'ratings' => collect(),
@@ -102,6 +102,7 @@ class BookReportController extends Controller
         // ジャンル別レビュー件数・平均点の算出
         $stats['genre_ratings'] = $genreStats->map(function ($item) {
             $ratings = $item['ratings'];
+
             return [
                 'id' => $item['genre']->id,
                 'name' => $item['genre']->name,

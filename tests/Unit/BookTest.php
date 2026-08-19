@@ -53,7 +53,7 @@ class BookTest extends TestCase
         // 2. Act
         Review::factory()->count(3)->create([
             'book_id' => $book->id,
-            'user_id' => $user->id
+            'user_id' => $user->id,
         ]);
 
         // 3. Assert

@@ -15,7 +15,7 @@ class UpdateBookRequest extends FormRequest
     }
 
     protected function prepareForValidation()
-    {//公開APIで404エラーの前にバリデーションチェックが入ってしまうのを回避
+    {// 公開APIで404エラーの前にバリデーションチェックが入ってしまうのを回避
         // 1. ルートパラメータからbookを取得
         $bookParam = $this->route('book');
 
@@ -23,7 +23,7 @@ class UpdateBookRequest extends FormRequest
         $bookId = $bookParam instanceof Book ? $bookParam->id : $bookParam;
 
         // 3. IDが存在しない場合は、バリデーション前に即座に404を返して割り込む
-        if (!Book::where('id', $bookId)->exists()) {
+        if (! Book::where('id', $bookId)->exists()) {
             throw new HttpResponseException(
                 response()->json(['error' => '指定された書籍が見つかりません。'], 404)
             );
@@ -40,7 +40,7 @@ class UpdateBookRequest extends FormRequest
             'isbn' => [
                 'nullable',
                 'digits:13',
-                Rule::unique('books', 'isbn')->ignore($bookId)
+                Rule::unique('books', 'isbn')->ignore($bookId),
             ],
             'published_date' => 'nullable|date_format:Y-m-d',
             'description' => 'nullable|string',

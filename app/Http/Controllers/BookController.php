@@ -78,12 +78,14 @@ class BookController extends Controller
             'genres',
             'reviews.likedByUsers'
         );
+
         return view('books.show', compact('book'));
     }
 
     public function create()
     {
         $genres = Genre::all();
+
         return view('books.create', compact('genres'));
     }
 
@@ -158,7 +160,7 @@ class BookController extends Controller
     public function fetchByIsbn(string $isbn): JsonResponse
     {
         // 13桁の数字チェック
-        if (!preg_match('/^\d{13}$/', $isbn)) {
+        if (! preg_match('/^\d{13}$/', $isbn)) {
             return response()->json(['error' => 'ISBNは13桁の数字で入力してください。'], 400);
         }
 
@@ -166,7 +168,7 @@ class BookController extends Controller
             $url = 'https://www.googleapis.com/books/v1/volumes';
 
             $queryParams = [
-                'q' => 'isbn:' . $isbn,
+                'q' => 'isbn:'.$isbn,
             ];
 
             // APIキーを指定
@@ -178,7 +180,7 @@ class BookController extends Controller
             $response = Http::get($url, $queryParams);
 
             if ($response->failed()) {
-                return response()->json(['error' => 'Google Books APIとの通信に失敗しました。Status: ' . $response->status()], 502);
+                return response()->json(['error' => 'Google Books APIとの通信に失敗しました。Status: '.$response->status()], 502);
             }
 
             $data = $response->json();
@@ -217,7 +219,8 @@ class BookController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            Log::error('ISBN検索エラー: ' . $e->getMessage());
+            Log::error('ISBN検索エラー: '.$e->getMessage());
+
             return response()->json(['error' => 'サーバー内部でエラーが発生しました。'], 500);
         }
     }
