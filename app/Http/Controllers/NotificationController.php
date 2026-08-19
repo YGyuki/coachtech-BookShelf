@@ -8,8 +8,8 @@ class NotificationController extends Controller
 {
     public function index()
     {
-        // ログインユーザーの通知を最新順に取得(15件/ページ)
-        $notifications = Auth::user()->notifications()->paginate(15);
+        // ログインユーザーの通知を最新順に取得
+        $notifications = Auth::user()->notifications()->get();
 
         return view('notifications.index', compact('notifications'));
     }

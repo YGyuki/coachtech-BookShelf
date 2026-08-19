@@ -26,7 +26,7 @@ class ReadingPlanController extends Controller
             $query->where('status', $request->status);
         }
 
-        $readingPlans = $query->latest()->paginate(10);
+        $readingPlans = $query->latest()->get();
 
         return view('reading-plans.index', compact('readingPlans', 'currentStatus'));
     }
