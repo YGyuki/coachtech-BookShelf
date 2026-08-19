@@ -91,7 +91,7 @@ class BookControllerTest extends TestCase
     }
 
     /** @test */
-    public function 既に登録されている_isb_nコードは登録できない(): void
+    public function 既に登録されているisbnコードは登録できない(): void
     {
         // 1. Arrange
         $user = User::factory()->create();
@@ -120,7 +120,7 @@ class BookControllerTest extends TestCase
     }
 
     /** @test */
-    public function 存在しないジャンル_i_dが送信された場合は登録できない(): void
+    public function 存在しないジャンルidが送信された場合は登録できない(): void
     {
         // 1. Arrange
         $user = User::factory()->create();
@@ -176,7 +176,7 @@ class BookControllerTest extends TestCase
     }
 
     /** @test */
-    public function 自分自身の_isb_nコードであれば重複エラーにならず更新できる(): void
+    public function 自分自身のisbnコードであれば重複エラーにならず更新できる(): void
     {
         // 1. Arrange
         $user = User::factory()->create();
@@ -212,7 +212,7 @@ class BookControllerTest extends TestCase
     }
 
     /** @test */
-    public function 登録している_isb_nコードへの変更はバリデーションエラーになる(): void
+    public function 登録しているisbnコードへの変更はバリデーションエラーになる(): void
     {
         // 1. Arrange
         $user = User::factory()->create();
@@ -392,7 +392,7 @@ class BookControllerTest extends TestCase
     /** ISBN検索
      */
     /** @test */
-    public function 正しい13桁の_isb_nコードで検索した場合に_google_books_ap_iから整形された書籍データが返却されること(): void
+    public function 正しい13桁のisbnコードで検索した場合にgoogle_books_apiから整形された書籍データが返却されること(): void
     {
         // フェイク（モック）されていない外部通信が発生した場合に、本物の通信をさせずにエラー（例外）を投げる設定
         Http::preventStrayRequests();
@@ -438,7 +438,7 @@ class BookControllerTest extends TestCase
     }
 
     /** @test */
-    public function 存在しない_isb_nまたは返却データの_isb_nが一致しない場合に404エラーが返却されること(): void
+    public function 存在しないisbnまたは返却データのisbnが一致しない場合に404エラーが返却されること(): void
     {
         // フェイク（モック）されていない外部通信が発生した場合に、本物の通信をさせずにエラー（例外）を投げる設定
         Http::preventStrayRequests();

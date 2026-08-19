@@ -75,7 +75,7 @@ class BookReportControllerTest extends TestCase
     }
 
     /** @test */
-    public function 評価分布が星5から星1まで_bladeの仕様に合わせたインデックスで正しく集計される(): void
+    public function 評価分布が星5から星1までbladeの仕様に合わせたインデックスで正しく集計される(): void
     {
         // 1. Arrange
         $user = User::factory()->create();
@@ -105,7 +105,7 @@ class BookReportControllerTest extends TestCase
     }
 
     /** @test */
-    public function 高評価書籍_to_p5は4星未満の書籍が件数に関わらず完全に除外される(): void
+    public function 高評価書籍top5は4星未満の書籍が件数に関わらず完全に除外される(): void
     {
         // 1. Arrange
         $user = User::factory()->create();
@@ -143,7 +143,7 @@ class BookReportControllerTest extends TestCase
     }
 
     /** @test */
-    public function 高評価書籍_to_p5は4星以上の書籍が5件を超えた場合に評価の高い順かつ最新レビュー順で最大5件に制限される(): void
+    public function 高評価書籍top5は4星以上の書籍が5件を超えた場合に評価の高い順かつ最新レビュー順で最大5件に制限される(): void
     {
         // 1. Arrange
         $user = User::factory()->create();
@@ -181,7 +181,7 @@ class BookReportControllerTest extends TestCase
     }
 
     /** @test */
-    public function ジャンル別評価傾向_to_p5にはジャンル別に平均点が高い順に最大5件抽出される(): void
+    public function ジャンル別評価傾向top5にはジャンル別に平均点が高い順に最大5件抽出される(): void
     {
         // 1. Arrange
         $user = User::factory()->create();
