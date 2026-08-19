@@ -5,14 +5,16 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ReviewRequest;
 use App\Models\Book;
 use App\Models\Review;
+use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 
 class ReviewController extends Controller
 {
     use AuthorizesRequests;
 
-    public function store(ReviewRequest $request, Book $book)
+    public function store(ReviewRequest $request, Book $book): RedirectResponse
     {
         $validated = $request->validated();
 
@@ -29,7 +31,7 @@ class ReviewController extends Controller
     /**
      * いいねトグル（追加/解除）処理
      */
-    public function like(Review $review)
+    public function like(Review $review): RedirectResponse
     {
         // 1. レビューの投稿者IDと、現在ログインしているユーザーのIDを比較
         if ($review->user_id === Auth::id()) {
@@ -49,7 +51,7 @@ class ReviewController extends Controller
     /**
      * レビュー編集画面
      */
-    public function edit(Review $review)
+    public function edit(Review $review): View
     {
         $this->authorize('update', $review);
 
@@ -62,7 +64,7 @@ class ReviewController extends Controller
     /**
      * レビュー更新処理
      */
-    public function update(ReviewRequest $request, Review $review)
+    public function update(ReviewRequest $request, Review $review): RedirectResponse
     {
         $this->authorize('update', $review);
 
@@ -80,7 +82,7 @@ class ReviewController extends Controller
     /**
      * レビュー削除処理
      */
-    public function destroy(Review $review)
+    public function destroy(Review $review): RedirectResponse
     {
         $this->authorize('delete', $review);
 

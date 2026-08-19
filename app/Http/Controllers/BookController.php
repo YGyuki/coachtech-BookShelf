@@ -6,8 +6,10 @@ use App\Http\Requests\StoreBookRequest;
 use App\Http\Requests\UpdateBookRequest;
 use App\Models\Book;
 use App\Models\Genre;
+use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
@@ -17,7 +19,7 @@ class BookController extends Controller
 {
     use AuthorizesRequests;
 
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         // 1. クエリビルダの初期化（reviewsテーブルと結合して平均評価を計算できるよう準備）
         $query = Book::query()
@@ -72,7 +74,7 @@ class BookController extends Controller
         return view('books.index', compact('books', 'genres'));
     }
 
-    public function show(Book $book)
+    public function show(Book $book): View
     {
         $book->load(
             'genres',
@@ -82,14 +84,14 @@ class BookController extends Controller
         return view('books.show', compact('book'));
     }
 
-    public function create()
+    public function create(): View
     {
         $genres = Genre::all();
 
         return view('books.create', compact('genres'));
     }
 
-    public function store(StoreBookRequest $request)
+    public function store(StoreBookRequest $request): RedirectResponse
     {
         $validated = $request->validated();
 
@@ -109,7 +111,7 @@ class BookController extends Controller
         return redirect()->route('books.index')->with('success', '書籍を登録しました。');
     }
 
-    public function edit(Book $book)
+    public function edit(Book $book): View
     {
         // 認可チェック
         $this->authorize('update', $book);
@@ -120,7 +122,7 @@ class BookController extends Controller
         return view('books.edit', compact('book', 'genres'));
     }
 
-    public function update(UpdateBookRequest $request, Book $book)
+    public function update(UpdateBookRequest $request, Book $book): RedirectResponse
     {
         // 認可チェック
         $this->authorize('update', $book);
@@ -143,7 +145,7 @@ class BookController extends Controller
         return redirect()->route('books.show', $book)->with('success', '書籍情報を更新しました。');
     }
 
-    public function destroy(Book $book)
+    public function destroy(Book $book): RedirectResponse
     {
         // 認可チェック
         $this->authorize('delete', $book);

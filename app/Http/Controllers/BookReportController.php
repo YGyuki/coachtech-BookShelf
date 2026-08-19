@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 
 class BookReportController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         // ログイン中のユーザーを取得
         $user = Auth::user();

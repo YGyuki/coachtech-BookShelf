@@ -8,10 +8,11 @@ use App\Http\Requests\UpdateBookRequest;
 use App\Http\Resources\BookCollection;
 use App\Http\Resources\BookResource;
 use App\Models\Book;
+use Illuminate\Http\JsonResponse;
 
 class BookController extends Controller
 {
-    public function index()
+    public function index(): BookCollection
     {
         $books = Book::with('genres')
             ->withAvg('reviews', 'rating')
@@ -21,7 +22,7 @@ class BookController extends Controller
         return new BookCollection($books);
     }
 
-    public function show($id)
+    public function show(int $id): BookResource|JsonResponse
     {
         $book = Book::with(['genres', 'reviews.user'])->find($id);
 
@@ -34,7 +35,7 @@ class BookController extends Controller
         return new BookResource($book);
     }
 
-    public function store(StoreBookRequest $request)
+    public function store(StoreBookRequest $request): JsonResponse
     {
         $validated = $request->validated();
 
@@ -56,7 +57,7 @@ class BookController extends Controller
             ->setStatusCode(201);
     }
 
-    public function update(UpdateBookRequest $request, $id)
+    public function update(UpdateBookRequest $request, $id): JsonResponse
     {
         $book = Book::find($id);
         if (! $book) {
@@ -82,7 +83,7 @@ class BookController extends Controller
             ->setStatusCode(200);
     }
 
-    public function destroy($id)
+    public function destroy($id): JsonResponse
     {
         $book = Book::find($id);
         if (! $book) {
