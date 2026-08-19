@@ -13,7 +13,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // 毎日、AM 0:00に実行
-        $schedule->command('app:check-reading-plans')->dailyAt('17:39');
+        $schedule->command('app:check-reading-plans')->dailyAt('0:00');
     }
 
     /**
