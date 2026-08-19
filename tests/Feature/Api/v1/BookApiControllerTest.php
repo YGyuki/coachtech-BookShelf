@@ -16,7 +16,7 @@ class BookApiControllerTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function ap_i経由で書籍一覧を取得するとページネーションされた_jso_nデータとステータス200を返す(): void
+    public function api経由で書籍一覧を取得するとページネーションされたjsonデータとステータス200を返す(): void
     {
         // 1. Arrange
         $user = User::factory()->create(['id' => 1, 'name' => 'テストユーザー']);
@@ -76,7 +76,7 @@ class BookApiControllerTest extends TestCase
     }
 
     /** @test */
-    public function ap_i経由で存在する書籍_i_dを指定するとその書籍の整形された_jso_nデータとステータス200を返す(): void
+    public function api経由で存在する書籍idを指定するとその書籍の整形されたjsonデータとステータス200を返す(): void
     {
         // 1. Arrange
         $user = User::factory()->create(['id' => 1, 'name' => 'レビュー投稿者']);
@@ -133,7 +133,7 @@ class BookApiControllerTest extends TestCase
     }
 
     /** @test */
-    public function ap_i経由で存在しない書籍_i_dを指定するとステータス404とエラーメッセージを返す(): void
+    public function api経由で存在しない書籍idを指定するとステータス404とエラーメッセージを返す(): void
     {
         // 1. Arrange
         $nonExistentId = 99999; // 存在しないID
@@ -149,7 +149,7 @@ class BookApiControllerTest extends TestCase
     }
 
     /** @test */
-    public function ap_i経由で認証済みユーザーが書籍を新規登録すると_jso_n形式データとステータス201を返す(): void
+    public function api経由で認証済みユーザーが書籍を新規登録するとjson形式データとステータス201を返す(): void
     {
         // 1. Arrange
         $owner = User::factory()->create();
@@ -184,7 +184,7 @@ class BookApiControllerTest extends TestCase
     }
 
     /** @test */
-    public function ap_i経由で未認証ユーザーが書籍を新規登録するとステータス401を返す(): void
+    public function api経由で未認証ユーザーが書籍を新規登録するとステータス401を返す(): void
     {
         // 1. Arrange
         $book = [
@@ -205,7 +205,7 @@ class BookApiControllerTest extends TestCase
     }
 
     /** @test */
-    public function ap_i経由の登録時にバリデーションエラーが発生するとステータス422とエラーメッセージを返す(): void
+    public function api経由の登録時にバリデーションエラーが発生するとステータス422とエラーメッセージを返す(): void
     {
         // 1. Arrange
         $owner = User::factory()->create();
@@ -242,7 +242,7 @@ class BookApiControllerTest extends TestCase
     }
 
     /** @test */
-    public function ap_i経由の登録時に既に登録されている_isb_nコードは登録できない(): void
+    public function api経由の登録時に既に登録されているisbnコードは登録できない(): void
     {
         // 1. Arrange
         $owner = User::factory()->create();
@@ -270,7 +270,7 @@ class BookApiControllerTest extends TestCase
     }
 
     /** @test */
-    public function ap_i経由の登録時に存在しないジャンル_i_dが送信された場合は登録できない(): void
+    public function api経由の登録時に存在しないジャンルidが送信された場合は登録できない(): void
     {
         // 1. Arrange
         $owner = User::factory()->create();
@@ -294,7 +294,7 @@ class BookApiControllerTest extends TestCase
     }
 
     /** @test */
-    public function ap_i経由で存在する書籍を所有者が更新すると書籍情報を書き換えて_jso_nデータを返す(): void
+    public function api経由で存在する書籍を所有者が更新すると書籍情報を書き換えてjsonデータを返す(): void
     {
         // 1. Arrange
         $owner = User::factory()->create();
@@ -324,7 +324,7 @@ class BookApiControllerTest extends TestCase
     }
 
     /** @test */
-    public function ap_i経由で他人の書籍を更新しようとすると403エラーを返す(): void
+    public function api経由で他人の書籍を更新しようとすると403エラーを返す(): void
     {
         // 1. Arrange
         $owner = User::factory()->create();
@@ -352,7 +352,7 @@ class BookApiControllerTest extends TestCase
     }
 
     /** @test */
-    public function ap_i経由の更新時に他人が既に登録している_isb_nコードへの変更はエラーになる(): void
+    public function api経由の更新時に他人が既に登録しているisbnコードへの変更はエラーになる(): void
     {
         // 1. Arrange
         $user = User::factory()->create(['id' => 1]);
@@ -379,7 +379,7 @@ class BookApiControllerTest extends TestCase
     }
 
     /** @test */
-    public function ap_i経由で存在しない書籍_i_dを指定して更新しようとすると404エラーを返す(): void
+    public function api経由で存在しない書籍idを指定して更新しようとすると404エラーを返す(): void
     {
         // 1. Arrange
         $user = User::factory()->create();
@@ -404,7 +404,7 @@ class BookApiControllerTest extends TestCase
     }
 
     /** @test */
-    public function ap_i経由で存在する書籍を所有者が削除するとステータス204を返す(): void
+    public function api経由で存在する書籍を所有者が削除するとステータス204を返す(): void
     {
         // 1. Arrange
         $owner = User::factory()->create();
@@ -420,7 +420,7 @@ class BookApiControllerTest extends TestCase
     }
 
     /** @test */
-    public function ap_i経由で他人の書籍を削除しようとすると403エラーを返す(): void
+    public function api経由で他人の書籍を削除しようとすると403エラーを返す(): void
     {
         // 1. Arrange
         $owner = User::factory()->create();
@@ -446,7 +446,7 @@ class BookApiControllerTest extends TestCase
     }
 
     /** @test */
-    public function ap_i経由で存在しない書籍_i_dを指定して削除しようとすると404エラーを返す(): void
+    public function api経由で存在しない書籍idを指定して削除しようとすると404エラーを返す(): void
     {
         // 1. Arrange
         $user = User::factory()->create();
