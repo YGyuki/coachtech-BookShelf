@@ -14,7 +14,7 @@ class BookTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function 書籍は特定のユーザーに所属する()
+    public function 書籍は特定のユーザーに所属する(): void
     {
         // 1. Arrange
         $user = User::factory()->create();
@@ -29,7 +29,7 @@ class BookTest extends TestCase
     }
 
     /** @test */
-    public function 書籍は複数のジャンルに紐づく()
+    public function 書籍は複数のジャンルに紐づく(): void
     {
         // 1. Arrange
         $book = Book::factory()->create();
@@ -44,7 +44,7 @@ class BookTest extends TestCase
     }
 
     /** @test */
-    public function 書籍は複数のレビューを持つ()
+    public function 書籍は複数のレビューを持つ(): void
     {
         // 1. Arrange
         $book = Book::factory()->create();
@@ -53,7 +53,7 @@ class BookTest extends TestCase
         // 2. Act
         Review::factory()->count(3)->create([
             'book_id' => $book->id,
-            'user_id' => $user->id
+            'user_id' => $user->id,
         ]);
 
         // 3. Assert
@@ -62,7 +62,7 @@ class BookTest extends TestCase
     }
 
     /** @test */
-    public function 書籍は複数のユーザーからお気に入り登録される()
+    public function 書籍は複数のユーザーからお気に入り登録される(): void
     {
         // 1. Arrange
         $book = Book::factory()->create();

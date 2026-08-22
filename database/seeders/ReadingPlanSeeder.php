@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\ReadingPlan;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
 
 class ReadingPlanSeeder extends Seeder

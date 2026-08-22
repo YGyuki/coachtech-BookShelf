@@ -3,38 +3,89 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\BookCollection;
-use App\Http\Resources\BookResource;
+use App\Http\Requests\Api\v1\SearchBookRequest;
 use App\Http\Requests\StoreBookRequest;
 use App\Http\Requests\UpdateBookRequest;
+use App\Http\Resources\BookCollection;
+use App\Http\Resources\BookResource;
 use App\Models\Book;
+use Illuminate\Http\JsonResponse;
 
 class BookController extends Controller
 {
-    public function index()
+    public function index(SearchBookRequest $request): BookCollection
     {
-        $books = Book::with('genres')
+        // 1. クエリビルダの初期化
+        $query = Book::with('genres')
             ->withAvg('reviews', 'rating')
-            ->withCount('reviews')
-            ->paginate(10);
+            ->withCount('reviews');
+
+        // 2. キーワード検索機能（titleまたはauthorに部分一致）
+        if ($request->filled('keyword')) {
+            $keyword = $request->input('keyword');
+            $query->where(function ($q) use ($keyword) {
+                $q->where('books.title', 'like', "%{$keyword}%")
+                    ->orWhere('books.author', 'like', "%{$keyword}%");
+            });
+        }
+
+        // 3. ジャンル抽出機能
+        // ジャンルIDでの絞り込み
+        if ($request->filled('genre')) {
+            $genreId = $request->input('genre');
+            $query->whereHas('genres', function ($q) use ($genreId) {
+                $q->where('genres.id', $genreId);
+            });
+        }
+
+        // ジャンル名での絞り込み
+        if ($request->filled('genre_name')) {
+            $genreName = $request->input('genre_name');
+            $query->whereHas('genres', function ($q) use ($genreName) {
+                $q->where('genres.name', $genreName);
+            });
+        }
+
+        // 4. ソート機能（登録日新しい順/古い順/タイトル順/平均評価順）
+        $sort = $request->input('sort', 'newest'); // デフォルト: newest
+        switch ($sort) {
+            case 'oldest':
+                $query->orderBy('books.created_at', 'asc');
+                break;
+            case 'title':
+                $query->orderBy('books.title', 'asc');
+                break;
+            case 'rating':
+                $query->orderByRaw('reviews_avg_rating IS NULL ASC')
+                    ->orderBy('reviews_avg_rating', 'desc');
+                break;
+            case 'newest':
+            default:
+                $query->orderBy('books.created_at', 'desc');
+                break;
+        }
+
+        // 5. ページネーション機能
+        $perPage = $request->input('per_page', 10);
+        $books = $query->paginate($perPage);
 
         return new BookCollection($books);
     }
 
-    public function show($id)
+    public function show(int $id): BookResource|JsonResponse
     {
         $book = Book::with(['genres', 'reviews.user'])->find($id);
 
         if (!$book) {
             return response()->json([
-                'error' => '指定された書籍が見つかりません。'
+                'error' => '指定された書籍が見つかりません。',
             ], 404);
         }
 
         return new BookResource($book);
     }
 
-    public function store(StoreBookRequest $request)
+    public function store(StoreBookRequest $request): JsonResponse
     {
         $validated = $request->validated();
 
@@ -56,12 +107,12 @@ class BookController extends Controller
             ->setStatusCode(201);
     }
 
-    public function update(UpdateBookRequest $request, $id)
+    public function update(UpdateBookRequest $request, $id): JsonResponse
     {
         $book = Book::find($id);
         if (!$book) {
             return response()->json([
-                'error' => '指定された書籍が見つかりません。'
+                'error' => '指定された書籍が見つかりません。',
             ], 404);
         }
 
@@ -82,12 +133,12 @@ class BookController extends Controller
             ->setStatusCode(200);
     }
 
-    public function destroy($id)
+    public function destroy($id): JsonResponse
     {
         $book = Book::find($id);
         if (!$book) {
             return response()->json([
-                'error' => '指定された書籍が見つかりません。'
+                'error' => '指定された書籍が見つかりません。',
             ], 404);
         }
 

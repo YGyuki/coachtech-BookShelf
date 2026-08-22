@@ -11,7 +11,8 @@ class ReadingPlanReminder extends Notification
     use Queueable;
 
     protected $readingPlan;
-    protected $type; //'before_3_days', 'today', 'after_3_days'
+
+    protected $type; // 'before_3_days', 'today', 'after_3_days'
 
     /**
      * Create a new notification instance.

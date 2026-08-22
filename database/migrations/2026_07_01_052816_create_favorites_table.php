@@ -4,7 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      */
@@ -16,7 +17,7 @@ return new class extends Migration {
             $table->foreignId('book_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
 
-            //同じユーザーが同じ書籍を複数回お気に入り登録するのを防ぐ
+            // 同じユーザーが同じ書籍を複数回お気に入り登録するのを防ぐ
             $table->unique(['user_id', 'book_id']);
         });
     }

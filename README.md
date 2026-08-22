@@ -118,7 +118,7 @@ erDiagram
         bigint user_id FK "○"
         bigint book_id FK "○"
         tinyint rating "○"
-        text comment "○"
+        varchar(255) comment "○"
         timestamp created_at
         timestamp updated_at
     }

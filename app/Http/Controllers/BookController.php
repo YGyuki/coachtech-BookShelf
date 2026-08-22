@@ -6,8 +6,10 @@ use App\Http\Requests\StoreBookRequest;
 use App\Http\Requests\UpdateBookRequest;
 use App\Models\Book;
 use App\Models\Genre;
+use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
@@ -17,7 +19,7 @@ class BookController extends Controller
 {
     use AuthorizesRequests;
 
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         // 1. クエリビルダの初期化（reviewsテーブルと結合して平均評価を計算できるよう準備）
         $query = Book::query()
@@ -72,22 +74,24 @@ class BookController extends Controller
         return view('books.index', compact('books', 'genres'));
     }
 
-    public function show(Book $book)
+    public function show(Book $book): View
     {
         $book->load(
             'genres',
             'reviews.likedByUsers'
         );
+
         return view('books.show', compact('book'));
     }
 
-    public function create()
+    public function create(): View
     {
         $genres = Genre::all();
+
         return view('books.create', compact('genres'));
     }
 
-    public function store(StoreBookRequest $request)
+    public function store(StoreBookRequest $request): RedirectResponse
     {
         $validated = $request->validated();
 
@@ -107,7 +111,7 @@ class BookController extends Controller
         return redirect()->route('books.index')->with('success', '書籍を登録しました。');
     }
 
-    public function edit(Book $book)
+    public function edit(Book $book): View
     {
         // 認可チェック
         $this->authorize('update', $book);
@@ -118,7 +122,7 @@ class BookController extends Controller
         return view('books.edit', compact('book', 'genres'));
     }
 
-    public function update(UpdateBookRequest $request, Book $book)
+    public function update(UpdateBookRequest $request, Book $book): RedirectResponse
     {
         // 認可チェック
         $this->authorize('update', $book);
@@ -141,7 +145,7 @@ class BookController extends Controller
         return redirect()->route('books.show', $book)->with('success', '書籍情報を更新しました。');
     }
 
-    public function destroy(Book $book)
+    public function destroy(Book $book): RedirectResponse
     {
         // 認可チェック
         $this->authorize('delete', $book);
@@ -158,7 +162,7 @@ class BookController extends Controller
     public function fetchByIsbn(string $isbn): JsonResponse
     {
         // 13桁の数字チェック
-        if (!preg_match('/^\d{13}$/', $isbn)) {
+        if (! preg_match('/^\d{13}$/', $isbn)) {
             return response()->json(['error' => 'ISBNは13桁の数字で入力してください。'], 400);
         }
 
@@ -166,7 +170,7 @@ class BookController extends Controller
             $url = 'https://www.googleapis.com/books/v1/volumes';
 
             $queryParams = [
-                'q' => 'isbn:' . $isbn,
+                'q' => 'isbn:'.$isbn,
             ];
 
             // APIキーを指定
@@ -178,7 +182,7 @@ class BookController extends Controller
             $response = Http::get($url, $queryParams);
 
             if ($response->failed()) {
-                return response()->json(['error' => 'Google Books APIとの通信に失敗しました。Status: ' . $response->status()], 502);
+                return response()->json(['error' => 'Google Books APIとの通信に失敗しました。Status: '.$response->status()], 502);
             }
 
             $data = $response->json();
@@ -217,7 +221,8 @@ class BookController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            Log::error('ISBN検索エラー: ' . $e->getMessage());
+            Log::error('ISBN検索エラー: '.$e->getMessage());
+
             return response()->json(['error' => 'サーバー内部でエラーが発生しました。'], 500);
         }
     }

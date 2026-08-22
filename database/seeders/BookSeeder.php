@@ -21,7 +21,7 @@ class BookSeeder extends Seeder
                 'author' => '夏目漱石',
                 'isbn' => '9784101010014',
                 'published_date' => '1905-01-01',
-                'genres' => ['小説']
+                'genres' => ['小説'],
             ],
 
             [
@@ -29,7 +29,7 @@ class BookSeeder extends Seeder
                 'author' => 'D・カーネギー',
                 'isbn' => '9784422100524',
                 'published_date' => '1936-10-01',
-                'genres' => ['ビジネス', '自己啓発']
+                'genres' => ['ビジネス', '自己啓発'],
             ],
 
             [
@@ -37,7 +37,7 @@ class BookSeeder extends Seeder
                 'author' => 'Dustin Boswell',
                 'isbn' => '9784873115658',
                 'published_date' => '2012-06-23',
-                'genres' => ['技術書']
+                'genres' => ['技術書'],
             ],
 
             [
@@ -45,7 +45,7 @@ class BookSeeder extends Seeder
                 'author' => 'スティーブン・R・コヴィー',
                 'isbn' => '9784863940246',
                 'published_date' => '2013-08-30',
-                'genres' => ['ビジネス', '自己啓発']
+                'genres' => ['ビジネス', '自己啓発'],
             ],
 
             [
@@ -53,7 +53,7 @@ class BookSeeder extends Seeder
                 'author' => '夏目漱石',
                 'isbn' => '9784101010021',
                 'published_date' => '1906-04-01',
-                'genres' => ['小説']
+                'genres' => ['小説'],
             ],
 
             [
@@ -61,7 +61,7 @@ class BookSeeder extends Seeder
                 'author' => 'ユヴァル・ノア・ハラリ',
                 'isbn' => '9784309226712',
                 'published_date' => '2016-09-08',
-                'genres' => ['歴史', '科学']
+                'genres' => ['歴史', '科学'],
             ],
 
             [
@@ -69,7 +69,7 @@ class BookSeeder extends Seeder
                 'author' => 'Robert C. Martin',
                 'isbn' => '9784048930598',
                 'published_date' => '2017-12-18',
-                'genres' => ['技術書']
+                'genres' => ['技術書'],
             ],
 
             [
@@ -77,7 +77,7 @@ class BookSeeder extends Seeder
                 'author' => '岸見一郎・古賀史健',
                 'isbn' => '9784478025819',
                 'published_date' => '2013-12-13',
-                'genres' => ['自己啓発']
+                'genres' => ['自己啓発'],
             ],
 
             [
@@ -85,7 +85,7 @@ class BookSeeder extends Seeder
                 'author' => '又吉直樹',
                 'isbn' => '9784163902302',
                 'published_date' => '2015-03-11',
-                'genres' => ['小説']
+                'genres' => ['小説'],
             ],
 
             [
@@ -93,7 +93,7 @@ class BookSeeder extends Seeder
                 'author' => 'ハンス・ロスリング',
                 'isbn' => '9784822289607',
                 'published_date' => '2019-01-11',
-                'genres' => ['ビジネス', '科学']
+                'genres' => ['ビジネス', '科学'],
             ],
 
             [
@@ -101,11 +101,11 @@ class BookSeeder extends Seeder
                 'author' => 'マルク・レビンソン',
                 'isbn' => '9784822251468',
                 'published_date' => '2007-01-18',
-                'genres' => ['ビジネス', '歴史']
+                'genres' => ['ビジネス', '歴史'],
             ],
         ];
 
-        //booksへの書籍登録
+        // booksへの書籍登録
         foreach ($books as $index => $bookData) {
             // カウンタ番号（1〜11）を生成
             $number = $index + 1;
@@ -123,7 +123,7 @@ class BookSeeder extends Seeder
                 ]
             );
 
-            //book_genreへのジャンル登録
+            // book_genreへのジャンル登録
             // 指定されたジャンル名から、対応するIDの配列を取得
             $genreIds = Genre::whereIn('name', $bookData['genres'])->pluck('id');
 

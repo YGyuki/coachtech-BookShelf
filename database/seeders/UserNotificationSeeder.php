@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 use App\Models\Book;
+use App\Models\User;
 use App\Notifications\GeneralNotification;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
@@ -17,7 +17,7 @@ class UserNotificationSeeder extends Seeder
     {
         $user = User::find(1);
 
-        if (!$user) {
+        if (! $user) {
             return;
         }
 

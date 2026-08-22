@@ -11,23 +11,23 @@ use Illuminate\Console\Command;
 class CheckReadingPlans extends Command
 {
     protected $signature = 'app:check-reading-plans';
+
     protected $description = '読書計画の期日チェック、通知送信、ステータス自動更新を日次で行う';
 
     public function handle()
     {
         $today = Carbon::today();
 
-        // 完了（Completed）および すでに期限切れ（Expired）以外の計画をすべて取得
+        // 完了（Completed）以外の計画をすべて取得
         $activePlans = ReadingPlan::whereNotIn('status', [
             ReadingPlanStatus::Completed->value,
-            ReadingPlanStatus::Expired->value,
         ])
             ->with(['user', 'book'])
             ->get();
 
         foreach ($activePlans as $plan) {
             $targetDate = Carbon::parse($plan->target_date)->startOfDay();
-            //期日からみて何日経過したか
+            // 期日からみて何日経過したか
             $passedDays = $targetDate->diffInDays($today, false);
 
             // 【通知タイミングの判定】

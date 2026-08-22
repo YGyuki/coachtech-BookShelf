@@ -13,7 +13,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // 毎日、AM 0:00に実行
-        Schedule::command('app:check-reading-plans')->daily();
+        $schedule->command('app:check-reading-plans')->dailyAt('0:00');
     }
 
     /**
@@ -21,7 +21,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands(): void
     {
-        $this->load(__DIR__ . '/Commands');
+        $this->load(__DIR__.'/Commands');
 
         require base_path('routes/console.php');
     }

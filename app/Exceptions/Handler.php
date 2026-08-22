@@ -2,9 +2,9 @@
 
 namespace App\Exceptions;
 
-use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Illuminate\Auth\AuthenticationException;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class Handler extends ExceptionHandler
@@ -29,7 +29,7 @@ class Handler extends ExceptionHandler
         $this->renderable(function (AuthenticationException $e, $request) {
             if ($request->is('api/v1/*')) {
                 return response()->json([
-                    'message' => '認証されていません。有効なトークンを提示してください。'
+                    'message' => '認証されていません。有効なトークンを提示してください。',
                 ], 401);
             }
         });
@@ -38,7 +38,7 @@ class Handler extends ExceptionHandler
         $this->renderable(function (AuthorizationException $e, $request) {
             if ($request->is('api/v1/*')) {
                 return response()->json([
-                    'message' => 'この操作を行う権限がありません（書籍の所有者ではありません）。'
+                    'message' => 'この操作を行う権限がありません（書籍の所有者ではありません）。',
                 ], 403);
             }
         });
@@ -48,7 +48,7 @@ class Handler extends ExceptionHandler
         $this->renderable(function (AccessDeniedHttpException $e, $request) {
             if ($request->is('api/v1/*')) {
                 return response()->json([
-                    'message' => 'この操作を行う権限がありません（書籍の所有者ではありません）。'
+                    'message' => 'この操作を行う権限がありません（書籍の所有者ではありません）。',
                 ], 403);
             }
         });

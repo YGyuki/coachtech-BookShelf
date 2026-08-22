@@ -13,7 +13,7 @@ class ReviewTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function レビューは特定のユーザーに所属する()
+    public function レビューは特定のユーザーに所属する(): void
     {
         // 1. Arrange
         $user = User::factory()->create();
@@ -32,7 +32,7 @@ class ReviewTest extends TestCase
     }
 
     /** @test */
-    public function レビューは特定の書籍に所属する()
+    public function レビューは特定の書籍に所属する(): void
     {
         // 1. Arrange
         $user = User::factory()->create();
@@ -51,7 +51,7 @@ class ReviewTest extends TestCase
     }
 
     /** @test */
-    public function レビューは複数のユーザーからいいねされる()
+    public function レビューは複数のユーザーからいいねされる(): void
     {
         // 1. Arrange
         $reviewUser = User::factory()->create();

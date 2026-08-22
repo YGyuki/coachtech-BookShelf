@@ -84,14 +84,14 @@ class BookControllerTest extends TestCase
             'isbn',
             'published_date',
             'image_url',
-            'genres'
+            'genres',
         ]);
         // データベースに登録されていないか
         $this->assertDatabaseCount('books', 0);
     }
 
     /** @test */
-    public function 既に登録されているISBNコードは登録できない(): void
+    public function 既に登録されているisbnコードは登録できない(): void
     {
         // 1. Arrange
         $user = User::factory()->create();
@@ -120,7 +120,7 @@ class BookControllerTest extends TestCase
     }
 
     /** @test */
-    public function 存在しないジャンルIDが送信された場合は登録できない(): void
+    public function 存在しないジャンルidが送信された場合は登録できない(): void
     {
         // 1. Arrange
         $user = User::factory()->create();
@@ -176,7 +176,7 @@ class BookControllerTest extends TestCase
     }
 
     /** @test */
-    public function 自分自身のISBNコードであれば重複エラーにならず更新できる(): void
+    public function 自分自身のisbnコードであれば重複エラーにならず更新できる(): void
     {
         // 1. Arrange
         $user = User::factory()->create();
@@ -212,7 +212,7 @@ class BookControllerTest extends TestCase
     }
 
     /** @test */
-    public function 登録しているISBNコードへの変更はバリデーションエラーになる(): void
+    public function 登録しているisbnコードへの変更はバリデーションエラーになる(): void
     {
         // 1. Arrange
         $user = User::factory()->create();
@@ -392,7 +392,7 @@ class BookControllerTest extends TestCase
     /** ISBN検索
      */
     /** @test */
-    public function 正しい13桁のISBNコードで検索した場合にGoogleBooksAPIから整形された書籍データが返却されること(): void
+    public function 正しい13桁のisbnコードで検索した場合にgoogle_books_apiから整形された書籍データが返却されること(): void
     {
         // フェイク（モック）されていない外部通信が発生した場合に、本物の通信をさせずにエラー（例外）を投げる設定
         Http::preventStrayRequests();
@@ -415,12 +415,12 @@ class BookControllerTest extends TestCase
                             'imageLinks' => ['thumbnail' => 'http://example.com'], // ※エラーに合せて修正
                             'publishedDate' => '2020-11-20',
                             'industryIdentifiers' => [
-                                ['type' => 'ISBN_13', 'identifier' => $isbn]
-                            ]
-                        ]
-                    ]
-                ]
-            ], 200)
+                                ['type' => 'ISBN_13', 'identifier' => $isbn],
+                            ],
+                        ],
+                    ],
+                ],
+            ], 200),
         ]);
 
         // 2. Act
@@ -438,7 +438,7 @@ class BookControllerTest extends TestCase
     }
 
     /** @test */
-    public function 存在しないISBNまたは返却データのISBNが一致しない場合に404エラーが返却されること(): void
+    public function 存在しないisbnまたは返却データのisbnが一致しない場合に404エラーが返却されること(): void
     {
         // フェイク（モック）されていない外部通信が発生した場合に、本物の通信をさせずにエラー（例外）を投げる設定
         Http::preventStrayRequests();
@@ -456,12 +456,12 @@ class BookControllerTest extends TestCase
                         'volumeInfo' => [
                             'title' => 'こころ',
                             'industryIdentifiers' => [
-                                ['type' => 'ISBN_13', 'identifier' => $returnedIsbn]
-                            ]
-                        ]
-                    ]
-                ]
-            ], 200)
+                                ['type' => 'ISBN_13', 'identifier' => $returnedIsbn],
+                            ],
+                        ],
+                    ],
+                ],
+            ], 200),
         ]);
 
         // 2. Act

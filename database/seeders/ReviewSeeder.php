@@ -26,7 +26,7 @@ class ReviewSeeder extends Seeder
             5 => '非常に読みやすく、一気に読了しました！万人におすすめできる名著です。',
         ];
 
-        //レビュー件数が各2～4件になるように設定(4件×2冊、3件×6冊、2件×3冊 = 合計32件)
+        // レビュー件数が各2～4件になるように設定(4件×2冊、3件×6冊、2件×3冊 = 合計32件)
         $reviewCounts = [4, 4, 3, 3, 3, 3, 3, 3, 2, 2, 2];
 
         foreach ($books as $index => $book) {
@@ -36,7 +36,6 @@ class ReviewSeeder extends Seeder
             // 1人のユーザーが同じ本に2回レビューを書かないよう、
             // 5人のユーザーをランダムにシャッフルし、必要な件数分だけ選出
             $selectedUsers = $users->shuffle()->take($count);
-
 
             foreach ($selectedUsers as $user) {
                 $rating = rand(1, 5); // 1〜5の範囲

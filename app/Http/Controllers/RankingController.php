@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
+use Illuminate\Contracts\View\View;
 
 class RankingController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         $rankedBooks = Book::has('reviews')
             ->withAvg('reviews', 'rating')

@@ -13,7 +13,7 @@ class UserTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function ユーザーは複数の書籍を登録できる()
+    public function ユーザーは複数の書籍を登録できる(): void
     {
         // 1. Arrange
         $user = User::factory()->create();
@@ -29,7 +29,7 @@ class UserTest extends TestCase
     }
 
     /** @test */
-    public function ユーザーは複数のレビューを書くことができる()
+    public function ユーザーは複数のレビューを書くことができる(): void
     {
         // 1. Arrange
         $user = User::factory()->create();
@@ -49,7 +49,7 @@ class UserTest extends TestCase
     }
 
     /** @test */
-    public function ユーザーは複数の書籍をお気に入りに登録できる()
+    public function ユーザーは複数の書籍をお気に入りに登録できる(): void
     {
         // 1. Arrange
         $user = User::factory()->create();
@@ -72,7 +72,7 @@ class UserTest extends TestCase
     }
 
     /** @test */
-    public function ユーザーは複数のレビューに対していいねができる()
+    public function ユーザーは複数のレビューに対していいねができる(): void
     {
         // 1. Arrange
         $user = User::factory()->create();

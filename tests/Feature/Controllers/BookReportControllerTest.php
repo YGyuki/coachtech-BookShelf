@@ -44,22 +44,22 @@ class BookReportControllerTest extends TestCase
             'book_id' => $book1->id,
             'target_date' => Carbon::today('Asia/Tokyo')->addDays(3)->format('Y-m-d'),
             'status' => ReadingPlanStatus::Completed->value,
-            'completed_at' => null
+            'completed_at' => null,
         ]);
         ReadingPlan::create([
             'user_id' => $user->id,
             'book_id' => $book2->id,
             'target_date' => Carbon::today('Asia/Tokyo')->subDays(3)->format('Y-m-d'),
             'status' => ReadingPlanStatus::Expired->value,
-            'completed_at' => now()
+            'completed_at' => now(),
         ]);
-        //進行中(読了冊数には含まれない)
+        // 進行中(読了冊数には含まれない)
         ReadingPlan::create([
             'user_id' => $user->id,
             'book_id' => $book3->id,
             'target_date' => Carbon::today('Asia/Tokyo')->addDays(3)->format('Y-m-d'),
             'status' => ReadingPlanStatus::InProgress->value,
-            'completed_at' => null
+            'completed_at' => null,
         ]);
 
         // 2. Act (実行)
@@ -75,14 +75,13 @@ class BookReportControllerTest extends TestCase
     }
 
     /** @test */
-    public function 評価分布が星5から星1までBladeの仕様に合わせたインデックスで正しく集計される(): void
+    public function 評価分布が星5から星1までbladeの仕様に合わせたインデックスで正しく集計される(): void
     {
         // 1. Arrange
         $user = User::factory()->create();
         $book1 = Book::factory()->create();
         $book2 = Book::factory()->create();
         $book3 = Book::factory()->create();
-
 
         // 星5を2件、星3を1件作成（星4, 2, 1は0件にする）
         Review::factory()->create(['user_id' => $user->id, 'book_id' => $book1->id, 'rating' => 5]);
@@ -106,7 +105,7 @@ class BookReportControllerTest extends TestCase
     }
 
     /** @test */
-    public function 高評価書籍TOP5は4星未満の書籍が件数に関わらず完全に除外される(): void
+    public function 高評価書籍top5は4星未満の書籍が件数に関わらず完全に除外される(): void
     {
         // 1. Arrange
         $user = User::factory()->create();
@@ -144,7 +143,7 @@ class BookReportControllerTest extends TestCase
     }
 
     /** @test */
-    public function 高評価書籍TOP5は4星以上の書籍が5件を超えた場合に評価の高い順かつ最新レビュー順で最大5件に制限される(): void
+    public function 高評価書籍top5は4星以上の書籍が5件を超えた場合に評価の高い順かつ最新レビュー順で最大5件に制限される(): void
     {
         // 1. Arrange
         $user = User::factory()->create();
@@ -182,7 +181,7 @@ class BookReportControllerTest extends TestCase
     }
 
     /** @test */
-    public function ジャンル別評価傾向TOP5にはジャンル別に平均点が高い順に最大5件抽出される(): void
+    public function ジャンル別評価傾向top5にはジャンル別に平均点が高い順に最大5件抽出される(): void
     {
         // 1. Arrange
         $user = User::factory()->create();
@@ -200,7 +199,7 @@ class BookReportControllerTest extends TestCase
             Review::factory()->create([
                 'user_id' => $user->id,
                 'book_id' => $book->id,
-                'rating' => $finalRating
+                'rating' => $finalRating,
             ]);
         }
 
