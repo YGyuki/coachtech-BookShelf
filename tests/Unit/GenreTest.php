@@ -12,7 +12,7 @@ class GenreTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function ジャンルは複数の書籍紐づく()
+    public function ジャンルは複数の書籍紐づく(): void
     {
         // 1. Arrange
         $genre = Genre::factory()->create(['name' => '小説']);
@@ -36,7 +36,7 @@ class GenreTest extends TestCase
     }
 
     /** @test */
-    public function ジャンルは書籍が0冊の状態でも登録できる()
+    public function ジャンルは書籍が0冊の状態でも登録できる(): void
     {
         // 1. Arrange
         // 本を1冊も作らず、ジャンルだけを独立して作成する
