@@ -78,7 +78,7 @@ class BookController extends Controller
     {
         $book = Book::with(['genres', 'reviews.user'])->find($id);
 
-        if (!$book) {
+        if (! $book) {
             return response()->json([
                 'error' => '指定された書籍が見つかりません。',
             ], 404);
@@ -112,7 +112,7 @@ class BookController extends Controller
     public function update(UpdateBookRequest $request, $id): JsonResponse
     {
         $book = Book::find($id);
-        if (!$book) {
+        if (! $book) {
             return response()->json([
                 'error' => '指定された書籍が見つかりません。',
             ], 404);
@@ -138,7 +138,7 @@ class BookController extends Controller
     public function destroy($id): JsonResponse
     {
         $book = Book::find($id);
-        if (!$book) {
+        if (! $book) {
             return response()->json([
                 'error' => '指定された書籍が見つかりません。',
             ], 404);

@@ -2,11 +2,11 @@
 
 namespace Tests\Unit;
 
+use App\Enums\ReadingPlanStatus;
 use App\Models\Book;
 use App\Models\ReadingPlan;
 use App\Models\User;
 use Carbon\Carbon;
-use App\Enums\ReadingPlanStatus;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -24,7 +24,7 @@ class ReadingPlanTest extends TestCase
             'user_id' => $user->id,
             'book_id' => $book->id,
             'target_date' => Carbon::today('Asia/Tokyo')->addDays(5)->format('Y-m-d'),
-            'status' => 'in_progress'
+            'status' => 'in_progress',
         ]);
 
         // 2. Act
@@ -45,7 +45,7 @@ class ReadingPlanTest extends TestCase
             'user_id' => $user->id,
             'book_id' => $book->id,
             'target_date' => Carbon::today('Asia/Tokyo')->addDays(5)->format('Y-m-d'),
-            'status' => 'in_progress'
+            'status' => 'in_progress',
         ]);
 
         // 2. Act
@@ -78,7 +78,7 @@ class ReadingPlanTest extends TestCase
     }
 
     /** @test */
-    public function scopeOfStatusは指定されたステータスでデータを正しく絞り込む(): void
+    public function scope_of_statusは指定されたステータスでデータを正しく絞り込む(): void
     {
         // 1. Arrange
         $user = User::factory()->create();
