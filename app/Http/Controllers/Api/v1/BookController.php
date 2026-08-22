@@ -15,8 +15,7 @@ class BookController extends Controller
 {
     public function index(SearchBookRequest $request): BookCollection
     {
-        // 1. クエリビルダの初期化（Eager Loading と レビュー集計）
-        // ※ withAvgを使うと「reviews_avg_rating」というカラム名が自動生成されます
+        // 1. クエリビルダの初期化
         $query = Book::with('genres')
             ->withAvg('reviews', 'rating')
             ->withCount('reviews');
@@ -57,7 +56,6 @@ class BookController extends Controller
                 $query->orderBy('books.title', 'asc');
                 break;
             case 'rating':
-                // withAvgによって生成された「reviews_avg_rating」を使用
                 $query->orderByRaw('reviews_avg_rating IS NULL ASC')
                     ->orderBy('reviews_avg_rating', 'desc');
                 break;
@@ -78,7 +76,7 @@ class BookController extends Controller
     {
         $book = Book::with(['genres', 'reviews.user'])->find($id);
 
-        if (! $book) {
+        if (!$book) {
             return response()->json([
                 'error' => '指定された書籍が見つかりません。',
             ], 404);
@@ -112,7 +110,7 @@ class BookController extends Controller
     public function update(UpdateBookRequest $request, $id): JsonResponse
     {
         $book = Book::find($id);
-        if (! $book) {
+        if (!$book) {
             return response()->json([
                 'error' => '指定された書籍が見つかりません。',
             ], 404);
@@ -138,7 +136,7 @@ class BookController extends Controller
     public function destroy($id): JsonResponse
     {
         $book = Book::find($id);
-        if (! $book) {
+        if (!$book) {
             return response()->json([
                 'error' => '指定された書籍が見つかりません。',
             ], 404);
